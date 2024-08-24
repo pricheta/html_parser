@@ -1,4 +1,4 @@
-import html
+from bs4 import BeautifulSoup
 
 html_file_path = "files/file.html"
 
