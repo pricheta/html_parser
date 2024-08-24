@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from datetime import datetime
 
 from bs4.element import ResultSet
 import pandas as pd
@@ -24,5 +23,5 @@ class BruteForceFileBuilder(IFileBuilder):
             result_list.append(element_info)
 
         result_df: pd.DataFrame = pd.DataFrame(data=result_list)
-        result_file_path:str = "files/Итоговый файл.xlsx"
-        result_df.to_excel(result_file_path)
+        settings.result_file_path = "files/Итоговый файл.xlsx"
+        result_df.to_excel(settings.result_file_path)
