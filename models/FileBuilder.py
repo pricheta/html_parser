@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 
 from bs4.element import ResultSet
 import pandas as pd
@@ -11,6 +11,7 @@ class IFileBuilder(ABC):
         self._result_set = result_set
         self._settings = settings
 
+    @abstractmethod
     def build(self) -> None:
         ...
 
