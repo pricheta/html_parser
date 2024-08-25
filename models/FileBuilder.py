@@ -1,15 +1,16 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 
 from bs4.element import ResultSet
 import pandas as pd
 
+from models.Settings import Settings
+
 
 class IFileBuilder(ABC):
-    def __init__(self, result_set: ResultSet) -> None:
+    def __init__(self, settings: Settings, result_set: ResultSet) -> None:
         self._result_set = result_set
-        ...
+        self._settings = settings
 
-    @abstractmethod
     def build(self) -> None:
         ...
 
@@ -22,6 +23,6 @@ class BruteForceFileBuilder(IFileBuilder):
             element_info: list[str] = [value for value in element.stripped_strings]
             result_list.append(element_info)
 
+        result_list = sorted(result_list, key=lambda x: len(x))
         result_df: pd.DataFrame = pd.DataFrame(data=result_list)
-        settings.result_file_path = "files/Итоговый файл.xlsx"
-        result_df.to_excel(settings.result_file_path)
+        result_df.to_excel(self._settings.result_file_path)
