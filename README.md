@@ -1,2 +1,3 @@
-# html_parser
-html parser для Влады
+# html parser для Влады
+
+Только ветка master содержит стабильные билды
