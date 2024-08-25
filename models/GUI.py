@@ -1,4 +1,5 @@
 import sys
+import os
 
 from abc import ABC, abstractmethod
 from tkinter import Tk, Button, Entry, Label, Frame
@@ -55,8 +56,9 @@ class GUIBuilder(IGUIBuilder):
         finish_label = Label(container, text="")
 
         element_classes: Entry = Entry(container, justify="center", font=('Calibri', 14), width=25)
-        with open("files/project/temp.txt", "r", encoding="utf-8") as temp_file:
-            element_classes.insert(index=0, string=temp_file.read())
+        if os.path.isfile("files/project/temp.txt"):
+            with open("files/project/temp.txt", "r", encoding="utf-8") as temp_file:
+                element_classes.insert(index=0, string=temp_file.read())
         element_classes.grid(row=1, column=0)
 
         start_button: Button = Button(container, text="Запуск", command=window.quit, width=20, relief="groove", height=1)
