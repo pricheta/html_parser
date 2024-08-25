@@ -1,5 +1,10 @@
 from abc import ABC, abstractmethod
-from tkinter import Tk, Button
+from functools import cached_property
+from linecache import cache
+from tkinter import Tk, Button, Entry, Label
+
+from models.Settings import Settings, SettingsBuilder
+
 
 class IGUIBuilder(ABC):
 
@@ -11,14 +16,23 @@ class IGUIBuilder(ABC):
 class GUIBuilder(IGUIBuilder):
 
     @staticmethod
-    @abstractmethod
     def build() -> Tk:
-        window = Tk()
+        window: Tk = Tk()
         window.title("Парсинг для Влады")
         window.geometry("300x300")
         window.resizable(False, False)
 
-        start_button = Button(text="Запуск")
+        label = Label(text="Введи класс(ы) элементов")
+        label.pack()
+
+        classes_entry: Entry = Entry(width=40)
+        classes_entry.pack()
+
+        start_button: Button = Button(text="Запуск")
         start_button.pack()
 
         return window
+
+
+def buildSettings(settings: Settings):
+    pass
