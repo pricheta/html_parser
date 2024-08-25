@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from datetime import datetime
 
 from bs4.element import ResultSet
 import pandas as pd
