@@ -7,6 +7,8 @@ from models.Settings import Settings
 
 
 class IFileBuilder(ABC):
+    """Интерфейс для билдера итоговых файлов"""
+
     def __init__(self, settings: Settings, result_set: ResultSet) -> None:
         self._result_set = result_set
         self._settings = settings
@@ -16,6 +18,7 @@ class IFileBuilder(ABC):
 
 
 class BruteForceFileBuilder(IFileBuilder):
+    """Билдер итоговых файлов, выводящий весь (буквально весь) контент найденных элементов"""
 
     def build(self) -> None:
         result_list: list[list[str]] = []
