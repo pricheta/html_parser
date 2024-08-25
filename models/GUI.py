@@ -12,10 +12,17 @@ class GUI:
     ----------
     window: Tk
         Окно приложения
+    hint_label: Label
+        Лейбл с подсказками. Помогает пользователю понять, что от него требуется
+    finish_label: Label
+        Финишный лейбл. Подсказывает результат работы
     element_classes: Entry
         Поле ввода классов, с помощью которого будут найдены нужные элементы
+    start_button: Button
+        Кнопка запуска проекта
+    exit_button: Button
+        Кнопка выхода из проекта
     """
-
     def __init__(self, window:Tk, hint_label: Label, finish_label: Label,  element_classes: Entry, start_button: Button, exit_button: Button) -> None:
         self.window = window
         self.hint_label = hint_label

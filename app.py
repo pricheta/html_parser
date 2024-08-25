@@ -42,7 +42,7 @@ if __name__ == "__main__":
     else:
         GUI.finish_label["text"] = "Не удалось по классам найти элементы"
 
-    #Удаляем лишние виджеты, финишный лейбл меняем под ситуацию и отрисовываем, запускаем окно
+    #Удаляем лишние виджеты, финишный лейбл отрисовываем, запускаем окно
     for GUI_element in (GUI.hint_label, GUI.element_classes, GUI.start_button):
         GUI_element.destroy()
     GUI.finish_label.grid(row=2, column=0)
