@@ -23,6 +23,7 @@ class BruteForceFileBuilder(IFileBuilder):
             element_info: list[str] = [value for value in element.stripped_strings]
             result_list.append(element_info)
 
+        result_list = sorted(result_list, key=lambda x: len(x))
         result_df: pd.DataFrame = pd.DataFrame(data=result_list)
         result_file_path:str = "files/Итоговый файл.xlsx"
         result_df.to_excel(result_file_path)
