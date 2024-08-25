@@ -1,7 +1,7 @@
 import sys
 
 from abc import ABC, abstractmethod
-from tkinter import Tk, Button, Entry, Label
+from tkinter import Tk, Button, Entry, Label, Frame
 
 
 class GUI:
@@ -15,9 +15,13 @@ class GUI:
         Поле ввода классов, с помощью которого будут найдены нужные элементы
     """
 
-    def __init__(self, window:Tk, element_classes: Entry) -> None:
+    def __init__(self, window:Tk, hint_label: Label, finish_label: Label,  element_classes: Entry, start_button: Button, exit_button: Button) -> None:
         self.window = window
+        self.hint_label = hint_label
+        self.finish_label = finish_label
         self.element_classes = element_classes
+        self.start_button = start_button
+        self.exit_button = exit_button
 
 
 class IGUIBuilder(ABC):
@@ -39,21 +43,33 @@ class GUIBuilder(IGUIBuilder):
         window.geometry("300x300")
         window.resizable(False, False)
 
-        label = Label(window, text="Введи класс(ы) элементов")
-        label.pack()
+        window.grid_rowconfigure(0, weight=1)
+        window.grid_columnconfigure(0, weight=1)
 
-        element_classes: Entry = Entry(window, width=40)
+        container = Frame(window)
+        container.grid(row=0, column=0)
+
+        hint_label = Label(container, text="Введи класс(ы) нужных элементов")
+        hint_label.grid(row=0, column=0)
+
+        finish_label = Label(container, text="")
+
+        element_classes: Entry = Entry(container, justify="center", font=('Calibri', 14), width=25)
         with open("files/project/temp.txt", "r", encoding="utf-8") as temp_file:
             element_classes.insert(index=0, string=temp_file.read())
-        element_classes.pack()
+        element_classes.grid(row=1, column=0)
 
-        start_button: Button = Button(window, text="Запуск", command=window.quit)
-        start_button.pack()
+        start_button: Button = Button(container, text="Запуск", command=window.quit, width=20, relief="groove", height=1)
+        start_button.grid(row=2, column=0, pady=(10, 5))
 
-        exit_button: Button = Button(window, text="Закрыть", command=sys.exit)
-        exit_button.pack()
+        exit_button: Button = Button(container, text="Закрыть", command=sys.exit, width=20, relief="groove", height=1)
+        exit_button.grid(row=3, column=0, pady=(5, 10))
 
         return GUI(
             window=window,
+            hint_label=hint_label,
+            finish_label=finish_label,
             element_classes=element_classes,
+            start_button=start_button,
+            exit_button=exit_button,
         )
