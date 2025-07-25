@@ -1,7 +1,6 @@
-from gui import GUI, get_gui
+from gui import gui
 
 if __name__ == "__main__":
-    gui:GUI = get_gui()
     gui.window.mainloop()
 
     # #Если пользователь не указал класс, не продолжаем работу

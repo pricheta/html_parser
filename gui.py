@@ -4,7 +4,7 @@ from threading import Thread
 from tkinter import Tk, Button, Entry, Label
 from pydantic import BaseModel, ConfigDict
 
-from parser import run_process
+from main_function import start
 
 
 GUI_ELEMENT = Tk | Label | Entry | Button
@@ -18,7 +18,6 @@ class GUI(BaseModel):
     classes_search_row: Entry
     start_button: Button
     exit_button: Button
-
 
 
 def get_gui() -> GUI:
@@ -60,5 +59,8 @@ def _pack_element(element: GUI_ELEMENT) -> None:
     element.pack(fill="y", ipadx=10, ipady=5, padx=10, pady=5)
 
 def _run() -> None:
-    thread = Thread(target=run_process, daemon=True)
+    thread = Thread(target=start, daemon=True)
     thread.start()
+
+
+gui = get_gui()
