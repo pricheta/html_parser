@@ -1,19 +1,19 @@
 from threading import Thread
 
-from tkinter import Tk, Button, Entry, Label
+from tkinter import Tk, Button, Entry, Label, Checkbutton
 from pydantic import BaseModel, ConfigDict
 
 from main_function import start
 
 
-GUI_ELEMENT = Tk | Label | Entry | Button
+GUI_ELEMENT = Tk | Label | Entry | Button | Checkbutton
 
 
 class GUI(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     window: Tk
-    hint_label: Label
+    search_label: Label
     classes_search_row: Entry
     start_button: Button
     exit_button: Button
@@ -22,24 +22,36 @@ class GUI(BaseModel):
 def get_gui() -> GUI:
     window: Tk = Tk()
     window.title("HTML-парсер")
-    window.geometry("300x300")
+    window.geometry("600x600")
     window.resizable(False, False)
 
-    hint_label = Label(window, text="Введи класс(ы) нужных элементов")
-    _pack_element(hint_label)
+    search_label = Label(window, text="Введи класс(ы) нужных элементов")
+    _pack_element(search_label)
 
-    classes_search_row: Entry = Entry(window, justify="center", font=('Calibri', 14), width=25)
-    _pack_element(classes_search_row)
+    classes_search_row: Entry = Entry(window, justify="center", font=('Sans', 14), width=25)
+    classes_search_row.pack()
+
+
+    link_label = Label(window, text="Отметь чекбокс и введи URL, если нужно скачать HTML-файл с сайта")
+    _pack_element(link_label)
+
+    use_link_checkbox = Checkbutton(window, text='Использовать URL')
+    use_link_checkbox.pack()
+
+    link_row: Entry = Entry(window, justify="center", font=('Sans', 14), width=25)
+    link_row.pack()
+
 
     start_button: Button = Button(window, text="Запуск", command=_run, width=20, relief="groove", height=1)
     _pack_element(start_button)
+
 
     exit_button: Button = Button(window, text="Закрыть", command=window.quit, width=20, relief="groove", height=1)
     _pack_element(exit_button)
 
     return GUI(
         window=window,
-        hint_label=hint_label,
+        search_label=search_label,
         classes_search_row=classes_search_row,
         start_button=start_button,
         exit_button=exit_button,
