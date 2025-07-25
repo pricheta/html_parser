@@ -1,16 +1,8 @@
-from bs4 import BeautifulSoup
-from bs4.element import ResultSet
-
-from models.Settings import Settings
-from models.GUI import GUI, get_gui
-from models.FileBuilder import  IFileBuilder, BruteForceFileBuilder
-
+from gui import GUI, get_gui
 
 if __name__ == "__main__":
-
-    #Собираем пользовательский интерфейс и запускаем его
-    GUI:GUI = get_gui()
-    GUI.window.mainloop()
+    gui:GUI = get_gui()
+    gui.window.mainloop()
 
     # #Если пользователь не указал класс, не продолжаем работу
     # while not GUI.element_classes.get():
