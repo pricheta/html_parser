@@ -10,7 +10,7 @@ def start() -> None:
         gui.search_label['text'] = 'Введи класс(ы) нужных элементов \nНужно обязательно заполнить поле!'
         return
 
-
+    print(gui.use_link_checkbox.state())
 
     with open(files_dir + html_filename, "r", encoding="utf-8") as html_file:
         bs = BeautifulSoup(html_file, features="html.parser")

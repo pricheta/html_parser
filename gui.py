@@ -15,6 +15,9 @@ class GUI(BaseModel):
     window: Tk
     search_label: Label
     classes_search_row: Entry
+    link_label: Label
+    use_link_checkbox: Checkbutton
+    link_row: Entry
     start_button: Button
     exit_button: Button
 
@@ -53,6 +56,9 @@ def get_gui() -> GUI:
         window=window,
         search_label=search_label,
         classes_search_row=classes_search_row,
+        link_label=link_label,
+        use_link_checkbox=use_link_checkbox,
+        link_row=link_row,
         start_button=start_button,
         exit_button=exit_button,
     )
