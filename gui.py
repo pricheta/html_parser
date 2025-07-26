@@ -14,8 +14,8 @@ class GUI(BaseModel):
 
     window: Tk
 
-    link_label: Label
-    link_row: Entry
+    url_label: Label
+    url_row: Entry
 
     main_block_search_label: Label
     main_block_search_row: Entry
@@ -37,10 +37,10 @@ def get_gui() -> GUI:
     window.geometry("400x500")
     window.resizable(False, False)
 
-    link_label = Label(window, text="Введи ссылку на сайт. Если ссылка не указана, \nбудет использован файл files/file.html")
-    link_row: Entry = Entry(window, justify="center", font=('Sans', 14), width=25)
-    pack_element(link_label)
-    pack_element(link_row)
+    url_label = Label(window, text="Введи ссылку на сайт. Если ссылка не указана, \nбудет использован файл files/file.html")
+    url_row: Entry = Entry(window, justify="center", font=('Sans', 14), width=25)
+    pack_element(url_label)
+    pack_element(url_row)
 
     main_block_search_label = Label(window, text="Введи класс основных элементов")
     main_block_search_row: Entry = Entry(window, justify="center", font=('Sans', 14), width=25)
@@ -67,8 +67,8 @@ def get_gui() -> GUI:
 
     return GUI(
         window=window,
-        link_label=link_label,
-        link_row=link_row,
+        url_label=url_label,
+        url_row=url_row,
         main_block_search_label=main_block_search_label,
         main_block_search_row=main_block_search_row,
         click_block_search_label=click_block_search_label,
