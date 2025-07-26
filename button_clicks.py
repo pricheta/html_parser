@@ -1,9 +1,11 @@
 import pandas as pd
-import requests
 from bs4 import BeautifulSoup, ResultSet
+
+from selenium_driver import get_html_file
 
 files_dir = 'files/'
 html_filename = 'file.html'
+ssl_link_header = 'https://'
 
 def start() -> None:
     from gui import gui, pack_element
@@ -15,14 +17,12 @@ def start() -> None:
 
     url = gui.link_row.get()
     if url:
-        url = 'https://' + url
-        response = requests.get(
-            url=url,
-        )
-        bs = BeautifulSoup(response.text, features="html.parser")
+        if ssl_link_header not in url:
+            url = ssl_link_header + url
+        html_file=get_html_file(url=url)
+        bs = BeautifulSoup(html_file, features="html.parser")
     else:
         with open(files_dir + html_filename, "r", encoding="utf-8") as html_file:
-            print(html_file)
             bs = BeautifulSoup(html_file, features="html.parser")
 
     attrs: dict[str, str] = {
