@@ -7,7 +7,7 @@ from chrome_driver import Chrome
 
 files_dir = 'files/'
 html_filename = 'file.html'
-result_file_name = 'Результат от {}'
+result_file_name = 'Результат от {}.xlsx'
 ssl_link_header = 'https://'
 
 def start() -> None:
@@ -53,11 +53,14 @@ def start() -> None:
 
     result_list: list[list[str]] = []
     for result_set in result_sets:
-        for element in result_set:
-            element_info: list[str] = [value for value in element.stripped_strings]
-            result_list.append(element_info)
+        element_info: list[str] = [
+            value
+            for element in result_set
+            for value in element.stripped_strings
+        ]
+        result_list.append(element_info)
 
     result_list = sorted(result_list, key=lambda x: len(x))
     result_df: pd.DataFrame = pd.DataFrame(data=result_list)
-    result_df.to_excel(files_dir + result_file_name.format(datetime.now()))
-    gui.main_block_search_label["text"] = "Файл выгружен"
+    result_df.to_excel(files_dir + result_file_name.format(datetime.now().strftime("%d.%m %H-%M") ))
+    gui.start_button["text"] = "Файл выгружен"
