@@ -31,12 +31,12 @@ def start() -> None:
     result_set: ResultSet = bs.find_all(attrs=attrs)
 
     if result_set:
-        result_list = [
-            value
-            for element in result_set
-            for value in element.stripped_strings
-        ]
+        result_list: list[list[str]] = []
+        for element in result_set:
+            element_info: list[str] = [value for value in element.stripped_strings]
+            result_list.append(element_info)
         result_list = sorted(result_list, key=lambda x: len(x))
+
         result_df: pd.DataFrame = pd.DataFrame(data=result_list)
         result_df.to_excel(files_dir + 'result.xlsx')
         gui.search_label["text"] = "Файл выгружен, найдено {} элементов".format(len(result_set))
