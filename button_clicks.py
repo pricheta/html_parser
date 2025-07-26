@@ -1,7 +1,7 @@
 import pandas as pd
 from bs4 import BeautifulSoup, ResultSet
 
-from selenium_driver import get_html_file
+from chrome_driver import Chrome
 
 files_dir = 'files/'
 html_filename = 'file.html'
@@ -9,6 +9,9 @@ ssl_link_header = 'https://'
 
 def start() -> None:
     from gui import gui, pack_element
+
+    chrome = Chrome(timeout=2)
+    result_sets = []
 
     searched_classes = gui.search_row.get()
     if not searched_classes:
@@ -19,29 +22,36 @@ def start() -> None:
     if url:
         if ssl_link_header not in url:
             url = ssl_link_header + url
-        html_file=get_html_file(url=url)
-        bs = BeautifulSoup(html_file, features="html.parser")
+
+        with chrome:
+            html_files=chrome.collect_html_files(
+                url="https://gkvostok2.ru/search?price=5.04494&price=43.74&floor=2&floor=17&square=24.49&square=108&ordering=price&pagination[page]=1&pagination[pageSize]=10",
+                main_block_class_value="flat-card",
+                clicked_block_class_value="flat-card__header",
+                sub_block_class_value="floor-card",
+            )
+
+        for html_file in html_files:
+            bs = BeautifulSoup(html_file, features="html.parser")
+            result_set = bs.find_all(class_=[searched_classes, "floor-card"])
+            result_sets.append(result_set)
+
     else:
         with open(files_dir + html_filename, "r", encoding="utf-8") as html_file:
             bs = BeautifulSoup(html_file, features="html.parser")
+        result_sets = [bs.find_all(class_=[searched_classes, ]), ]
 
-    attrs: dict[str, str] = {
-        "class": searched_classes,
-    }
-    result_set: ResultSet = bs.find_all(attrs=attrs)
-
-    if result_set:
-        result_list: list[list[str]] = []
+    result_list: list[list[str]] = []
+    for result_set in result_sets:
         for element in result_set:
             element_info: list[str] = [value for value in element.stripped_strings]
             result_list.append(element_info)
-        result_list = sorted(result_list, key=lambda x: len(x))
 
-        result_df: pd.DataFrame = pd.DataFrame(data=result_list)
-        result_df.to_excel(files_dir + 'result.xlsx')
-        gui.search_label["text"] = "Файл выгружен, найдено {} элементов".format(len(result_set))
-    else:
-        gui.search_label["text"] = "Не удалось по классам найти элементы"
+    result_list = sorted(result_list, key=lambda x: len(x))
+    result_df: pd.DataFrame = pd.DataFrame(data=result_list)
+    result_df.to_excel(files_dir + 'result.xlsx')
+    gui.search_label["text"] = "Файл выгружен"
+
 
     gui.search_row.pack_forget()
     gui.link_label.pack_forget()
