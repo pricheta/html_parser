@@ -16,7 +16,6 @@ class GUI(BaseModel):
     search_label: Label
     classes_search_row: Entry
     link_label: Label
-    use_link_checkbox: Checkbutton
     link_row: Entry
     start_button: Button
     exit_button: Button
@@ -38,9 +37,6 @@ def get_gui() -> GUI:
     link_label = Label(window, text="Отметь чекбокс и введи URL, если нужно скачать HTML-файл с сайта")
     _pack_element(link_label)
 
-    use_link_checkbox = Checkbutton(window, text='Использовать URL')
-    use_link_checkbox.pack()
-
     link_row: Entry = Entry(window, justify="center", font=('Sans', 14), width=25)
     link_row.pack()
 
@@ -57,7 +53,6 @@ def get_gui() -> GUI:
         search_label=search_label,
         classes_search_row=classes_search_row,
         link_label=link_label,
-        use_link_checkbox=use_link_checkbox,
         link_row=link_row,
         start_button=start_button,
         exit_button=exit_button,

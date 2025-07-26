@@ -1,3 +1,4 @@
+import requests
 from bs4 import BeautifulSoup
 
 files_dir = 'files/'
@@ -10,7 +11,14 @@ def start() -> None:
         gui.search_label['text'] = 'Введи класс(ы) нужных элементов \nНужно обязательно заполнить поле!'
         return
 
-    print(gui.use_link_checkbox.state())
-
-    with open(files_dir + html_filename, "r", encoding="utf-8") as html_file:
-        bs = BeautifulSoup(html_file, features="html.parser")
+    url = gui.link_row.get()
+    if url:
+        url = 'https://' + url
+        response = requests.get(
+            url=url,
+        )
+        bs = BeautifulSoup(response.text, features="html.parser")
+    else:
+        with open(files_dir + html_filename, "r", encoding="utf-8") as html_file:
+            print(html_file)
+            bs = BeautifulSoup(html_file, features="html.parser")
