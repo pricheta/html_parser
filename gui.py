@@ -34,8 +34,8 @@ class GUI(BaseModel):
 def get_gui() -> GUI:
     window: Tk = Tk()
     window.title("HTML-парсер")
-    window.geometry("300x900")
-    #window.resizable(False, False)
+    window.geometry("400x500")
+    window.resizable(False, False)
 
     link_label = Label(window, text="Введи ссылку на сайт. Если ссылка не указана, \nбудет использован файл files/file.html")
     link_row: Entry = Entry(window, justify="center", font=('Sans', 14), width=25)
@@ -57,12 +57,12 @@ def get_gui() -> GUI:
     pack_element(sub_block_search_label)
     pack_element(sub_block_search_row)
 
-    start_button: Button = Button(window, text="Запуск", command=_start, width=20, relief="groove", height=1)
+    start_button: Button = Button(window, text="Запуск", command=_start, width=40, relief="groove", height=1)
     pack_element(start_button)
 
-    restart_button: Button = Button(window, text="Повторить", command=restart, width=20, relief="groove", height=1)
+    restart_button: Button = Button(window, text="Повторить", command=restart, width=40, relief="groove", height=1)
 
-    exit_button: Button = Button(window, text="Закрыть", command=window.quit, width=20, relief="groove", height=1)
+    exit_button: Button = Button(window, text="Закрыть", command=window.quit, width=40, relief="groove", height=1)
     pack_element(exit_button)
 
     return GUI(
