@@ -13,10 +13,19 @@ class GUI(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     window: Tk
-    search_label: Label
-    search_row: Entry
+
     link_label: Label
     link_row: Entry
+
+    main_block_search_label: Label
+    main_block_search_row: Entry
+
+    click_block_search_label: Label
+    click_block_search_row: Entry
+
+    sub_block_search_label: Label
+    sub_block_search_row: Entry
+
     start_button: Button
     restart_button: Button
     exit_button: Button
@@ -25,18 +34,28 @@ class GUI(BaseModel):
 def get_gui() -> GUI:
     window: Tk = Tk()
     window.title("HTML-парсер")
-    window.geometry("300x300")
-    window.resizable(False, False)
-
-    search_label = Label(window, text="Введи класс(ы) нужных элементов")
-    search_row: Entry = Entry(window, justify="center", font=('Sans', 14), width=25)
-    pack_element(search_label)
-    pack_element(search_row)
+    window.geometry("300x900")
+    #window.resizable(False, False)
 
     link_label = Label(window, text="Введи ссылку на сайт. Если ссылка не указана, \nбудет использован файл files/file.html")
     link_row: Entry = Entry(window, justify="center", font=('Sans', 14), width=25)
     pack_element(link_label)
     pack_element(link_row)
+
+    main_block_search_label = Label(window, text="Введи класс основных элементов")
+    main_block_search_row: Entry = Entry(window, justify="center", font=('Sans', 14), width=25)
+    pack_element(main_block_search_label)
+    pack_element(main_block_search_row)
+
+    click_block_search_label = Label(window, text="Введи класс элементов, на которые нужно кликать")
+    click_block_search_row: Entry = Entry(window, justify="center", font=('Sans', 14), width=25)
+    pack_element(click_block_search_label)
+    pack_element(click_block_search_row)
+
+    sub_block_search_label = Label(window, text="Введи класс дополнительных элементов")
+    sub_block_search_row: Entry = Entry(window, justify="center", font=('Sans', 14), width=25)
+    pack_element(sub_block_search_label)
+    pack_element(sub_block_search_row)
 
     start_button: Button = Button(window, text="Запуск", command=_start, width=20, relief="groove", height=1)
     pack_element(start_button)
@@ -48,10 +67,14 @@ def get_gui() -> GUI:
 
     return GUI(
         window=window,
-        search_label=search_label,
-        search_row=search_row,
         link_label=link_label,
         link_row=link_row,
+        main_block_search_label=main_block_search_label,
+        main_block_search_row=main_block_search_row,
+        click_block_search_label=click_block_search_label,
+        click_block_search_row=click_block_search_row,
+        sub_block_search_label=sub_block_search_label,
+        sub_block_search_row=sub_block_search_row,
         start_button=start_button,
         restart_button=restart_button,
         exit_button=exit_button,

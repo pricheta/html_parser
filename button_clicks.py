@@ -13,9 +13,9 @@ def start() -> None:
     chrome = Chrome(timeout=2)
     result_sets = []
 
-    searched_classes = gui.search_row.get()
+    searched_classes = gui.main_block_search_row.get()
     if not searched_classes:
-        gui.search_label['text'] = 'Введи класс(ы) нужных элементов \nНужно обязательно заполнить поле!'
+        gui.main_block_search_label['text'] = 'Введи класс(ы) нужных элементов \nНужно обязательно заполнить поле!'
         return
 
     url = gui.link_row.get()
@@ -50,10 +50,10 @@ def start() -> None:
     result_list = sorted(result_list, key=lambda x: len(x))
     result_df: pd.DataFrame = pd.DataFrame(data=result_list)
     result_df.to_excel(files_dir + 'result.xlsx')
-    gui.search_label["text"] = "Файл выгружен"
+    gui.main_block_search_label["text"] = "Файл выгружен"
 
 
-    gui.search_row.pack_forget()
+    gui.main_block_search_row.pack_forget()
     gui.link_label.pack_forget()
     gui.link_row.pack_forget()
     gui.start_button.pack_forget()
@@ -63,7 +63,7 @@ def start() -> None:
 def restart() -> None:
     from gui import gui, pack_element
 
-    pack_element(gui.search_row)
+    pack_element(gui.main_block_search_row)
     pack_element(gui.link_label)
     pack_element(gui.link_row)
     pack_element(gui.start_button)
