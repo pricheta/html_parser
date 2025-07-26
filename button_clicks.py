@@ -7,6 +7,7 @@ html_filename = 'file.html'
 
 def start() -> None:
     from gui import gui, pack_element
+
     searched_classes = gui.search_row.get()
     if not searched_classes:
         gui.search_label['text'] = 'Введи класс(ы) нужных элементов \nНужно обязательно заполнить поле!'
@@ -42,8 +43,20 @@ def start() -> None:
     else:
         gui.search_label["text"] = "Не удалось по классам найти элементы"
 
-    gui.search_row.destroy()
-    gui.link_label.destroy()
-    gui.link_row.destroy()
-    gui.start_button.destroy()
+    gui.search_row.pack_forget()
+    gui.link_label.pack_forget()
+    gui.link_row.pack_forget()
+    gui.start_button.pack_forget()
+
     pack_element(gui.restart_button, before=gui.exit_button)
+
+def restart() -> None:
+    from gui import gui, pack_element
+
+    pack_element(gui.search_row)
+    pack_element(gui.link_label)
+    pack_element(gui.link_row)
+    pack_element(gui.start_button)
+    pack_element(gui.exit_button, after=gui.start_button)
+
+    gui.restart_button.pack_forget()
