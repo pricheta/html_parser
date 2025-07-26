@@ -3,7 +3,7 @@ from threading import Thread
 from tkinter import Tk, Button, Entry, Label, Checkbutton
 from pydantic import BaseModel, ConfigDict
 
-from button_clicks import start, restart
+from button_clicks import start
 
 
 GUI_ELEMENT = Tk | Label | Entry | Button | Checkbutton
@@ -27,7 +27,6 @@ class GUI(BaseModel):
     sub_block_search_row: Entry
 
     start_button: Button
-    restart_button: Button
     exit_button: Button
 
 
@@ -60,8 +59,6 @@ def get_gui() -> GUI:
     start_button: Button = Button(window, text="Запуск", command=_start, width=40, relief="groove", height=1)
     pack_element(start_button)
 
-    restart_button: Button = Button(window, text="Повторить", command=restart, width=40, relief="groove", height=1)
-
     exit_button: Button = Button(window, text="Закрыть", command=window.quit, width=40, relief="groove", height=1)
     pack_element(exit_button)
 
@@ -76,7 +73,6 @@ def get_gui() -> GUI:
         sub_block_search_label=sub_block_search_label,
         sub_block_search_row=sub_block_search_row,
         start_button=start_button,
-        restart_button=restart_button,
         exit_button=exit_button,
     )
 

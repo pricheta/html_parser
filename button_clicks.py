@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import pandas as pd
 from bs4 import BeautifulSoup, ResultSet
 
@@ -5,6 +7,7 @@ from chrome_driver import Chrome
 
 files_dir = 'files/'
 html_filename = 'file.html'
+result_file_name = 'Результат от {}'
 ssl_link_header = 'https://'
 
 def start() -> None:
@@ -34,13 +37,13 @@ def start() -> None:
             html_files=chrome.collect_html_files(
                 url=url,
                 main_block_classes_value=main_block_classes_value,
-                click_block_classes_value="flat-card__header",
-                sub_block_classes_value="floor-card",
+                click_block_classes_value=click_block_classes_value,
+                sub_block_classes_value=sub_block_classes_value,
             )
 
         for html_file in html_files:
             bs = BeautifulSoup(html_file, features="html.parser")
-            result_set = bs.find_all(class_=[main_block_classes_value, "floor-card"])
+            result_set = bs.find_all(class_=[main_block_classes_value, sub_block_classes_value])
             result_sets.append(result_set)
 
     else:
@@ -56,24 +59,5 @@ def start() -> None:
 
     result_list = sorted(result_list, key=lambda x: len(x))
     result_df: pd.DataFrame = pd.DataFrame(data=result_list)
-    result_df.to_excel(files_dir + 'result.xlsx')
+    result_df.to_excel(files_dir + result_file_name.format(datetime.now()))
     gui.main_block_search_label["text"] = "Файл выгружен"
-
-
-    gui.main_block_search_row.pack_forget()
-    gui.url_label.pack_forget()
-    gui.url_row.pack_forget()
-    gui.start_button.pack_forget()
-
-    pack_element(gui.restart_button, before=gui.exit_button)
-
-def restart() -> None:
-    from gui import gui, pack_element
-
-    pack_element(gui.main_block_search_row)
-    pack_element(gui.url_label)
-    pack_element(gui.url_row)
-    pack_element(gui.start_button)
-    pack_element(gui.exit_button, after=gui.start_button)
-
-    gui.restart_button.pack_forget()
