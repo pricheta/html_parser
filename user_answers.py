@@ -17,4 +17,5 @@ class UserAnswers(BaseModel):
             setattr(self, field, None)
         return self
 
+
 user_answers = UserAnswers()
