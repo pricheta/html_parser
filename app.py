@@ -1,7 +1,7 @@
 from parsers.chrome_parser import ChromeParser
 from parsers.file_parser import FileParser
 from questioner.questioner import questioner
-from user_answers import AppMode
+from questioner.user_answers import AppMode
 
 if __name__ == "__main__":
     user_answers = questioner.question_user()
