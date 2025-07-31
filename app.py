@@ -1,4 +1,3 @@
-from logger.logger import logger
 from parsers.chrome_parser import ChromeParser
 from parsers.file_parser import FileParser
 from questioner.questioner import questioner
