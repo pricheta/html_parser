@@ -3,11 +3,11 @@ from datetime import datetime
 import pandas as pd
 from bs4 import BeautifulSoup
 
-from chrome_driver import Chrome
-from constants import FILES_DIR, HTML_FILENAME, RESULT_FILENAME, SSL_HEADER
+from parsers.chrome_parser import Chrome
+from constants import FILES_DIR, HTML_FILENAME, RESULT_FILENAME
 
 
-def () -> None:
+def s() -> None:
 
     chrome = Chrome(timeout=2)
     result_sets = []
