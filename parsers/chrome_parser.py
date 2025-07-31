@@ -7,7 +7,6 @@ from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 
 from parsers.parser_interface import Parser
-from user_answers import user_answers
 
 
 class Chrome:
@@ -60,15 +59,15 @@ class ChromeParser(Parser):
         result_sets = []
         with chrome:
             html_files=chrome.collect_html_files(
-                url=user_answers.url,
-                master_page_parsed_classes=user_answers.master_page_parsed_classes,
-                clicked_classes=user_answers.clicked_classes,
-                slave_page_parsed_classes=user_answers.slave_page_parsed_classes,
+                url=self.user_answers.url,
+                master_page_parsed_classes=self.user_answers.master_page_parsed_classes,
+                clicked_classes=self.user_answers.clicked_classes,
+                slave_page_parsed_classes=self.user_answers.slave_page_parsed_classes,
             )
 
         for html_file in html_files:
             bs = BeautifulSoup(html_file, features="html.parser")
-            result_set = bs.find_all(class_=[user_answers.master_page_parsed_classes, user_answers.slave_page_parsed_classes])
+            result_set = bs.find_all(class_=[self.user_answers.master_page_parsed_classes, self.user_answers.slave_page_parsed_classes])
             result_sets.append(result_set)
 
         return result_sets
