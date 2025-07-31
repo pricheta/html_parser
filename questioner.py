@@ -2,7 +2,7 @@ import questionary
 
 from common.constants import SSL_HEADER
 from common.utils import clear_screen
-from user_answers import UserAnswers
+from user_answers import UserAnswers, AppMode
 
 
 class Questioner:
@@ -13,15 +13,17 @@ class Questioner:
         clear_screen()
 
         self._ask_user(
-            use_url=questionary.confirm("Использовать ссылку? Если нет, будет использовано содержимое файла files/file.htm"),
+            app_mode=questionary.select(
+                "Режим работы приложения",
+                [AppMode.FROM_URL, AppMode.FROM_FILE, ],
+                instruction=' ',
+            ),
         )
 
-        if self.user_answers.use_url:
+        if self.user_answers.app_mode == AppMode.FROM_URL:
             self._ask_user(
                 get_to_slave_page=questionary.confirm("Нужно ли будет переходить на вторичные страницы?"),
             )
-
-        if self.user_answers.use_url:
             self._ask_user(url=questionary.text('Ссылка на основную страницу для парсинга:', validate=bool))
             if SSL_HEADER not in self.user_answers.url:
                 self.user_answers.url = SSL_HEADER + self.user_answers.url

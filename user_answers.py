@@ -1,10 +1,16 @@
+from enum import StrEnum
 from typing import Optional, Self
 
 from pydantic import BaseModel
 
+class AppMode(StrEnum):
+    FROM_URL = 'Переход по ссылке'
+    FROM_FILE = 'Выгрузка из файла'
+
 
 class UserAnswers(BaseModel):
-    use_url: Optional[bool] = None
+    app_mode: Optional[AppMode] = None
+
     get_to_slave_page: Optional[bool] = None
 
     url: Optional[str] = None
