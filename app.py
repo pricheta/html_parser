@@ -1,11 +1,9 @@
 from parsers.chrome_parser import ChromeParser
 from parsers.file_parser import FileParser
-from questioner import Questioner
-
+from questioner import questioner
 
 if __name__ == "__main__":
-    questionary = Questioner()
-    user_answers = questionary.question_user()
+    user_answers = questioner.question_user()
 
     if user_answers.use_url:
         parser = ChromeParser(user_answers)

@@ -42,3 +42,6 @@ class Questioner:
         answers_dict = questionary.form(**kwargs).ask()
         for param, answer in answers_dict.items():
             setattr(self.user_answers, param, answer)
+
+
+questioner = Questioner()
