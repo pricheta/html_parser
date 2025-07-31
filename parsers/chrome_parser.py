@@ -6,6 +6,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 
+from logger.logger import log_calling
 from parsers.parser_interface import Parser
 
 
@@ -21,6 +22,7 @@ class Chrome:
         self.driver.quit()
         return False
 
+    @log_calling
     def collect_html_content(
         self,
         url:str,
@@ -54,6 +56,7 @@ class Chrome:
 
 
 class ChromeParser(Parser):
+    @log_calling
     def parse(self) -> list[ResultSet]:
         chrome = Chrome(delay=2)
         result_sets = []
