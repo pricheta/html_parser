@@ -12,8 +12,12 @@ def question_user() -> None:
 
     ask_user(
         use_url=questionary.confirm("Использовать ссылку? Если нет, будет использовано содержимое файла files/file.htm"),
-        get_to_slave_page=questionary.confirm("Нужно ли будет переходить на вторичные страницы?"),
     )
+
+    if user_answers.use_url:
+        ask_user(
+            get_to_slave_page=questionary.confirm("Нужно ли будет переходить на вторичные страницы?"),
+        )
 
     if user_answers.use_url:
         ask_user(url=questionary.text('Ссылка на основную страницу для парсинга:', validate=bool))
