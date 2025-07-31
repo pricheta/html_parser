@@ -3,7 +3,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class UserAnswer(BaseModel):
+class UserAnswers(BaseModel):
     use_url: Optional[bool] = None
     get_to_slave_page: Optional[bool] = None
 
@@ -14,4 +14,4 @@ class UserAnswer(BaseModel):
 
 
 
-user_answers = UserAnswer()
+user_answers = UserAnswers()

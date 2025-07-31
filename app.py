@@ -6,7 +6,7 @@ from constants import SSL_HEADER
 from models import user_answers
 
 
-def main() -> None:
+def question_user() -> None:
     clear_screen()
 
     ask_user(
@@ -29,8 +29,6 @@ def main() -> None:
             slave_page_parsed_classes=questionary.text("Введи классы элементов для парсинга на вторичных страницах:", validate=bool),
         )
 
-    print(user_answers)
-
 
 def ask_user(**kwargs) -> None:
     answers_dict = questionary.form(**kwargs).ask()
@@ -46,4 +44,4 @@ def clear_screen() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    question_user()

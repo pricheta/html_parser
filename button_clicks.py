@@ -7,20 +7,12 @@ from chrome_driver import Chrome
 from constants import FILES_DIR, HTML_FILENAME, RESULT_FILENAME, SSL_HEADER
 
 
-def start() -> None:
+def () -> None:
 
     chrome = Chrome(timeout=2)
     result_sets = []
 
 
-    if not main_block_classes_value:
-        return
-
-    if click_block_classes_value and not sub_block_classes_value:
-        gui.main_block_search_label['text'] = 'Введи класс(ы) нужных элементов \nНе указан класс дополнительных элементов!'
-        return
-
-    if url:
         with chrome:
             html_files=chrome.collect_html_files(
                 url=url,
