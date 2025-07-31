@@ -1,3 +1,4 @@
+import logger.logger
 from parsers.chrome_parser import ChromeParser
 from parsers.file_parser import FileParser
 from questioner.questioner import questioner
@@ -12,4 +13,5 @@ if __name__ == "__main__":
     else:
         parser = FileParser(user_answers)
 
-    ...
+    parsed = parser.parse()
+    logger.logger.logger.info(parsed)

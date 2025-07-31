@@ -10,8 +10,8 @@ from parsers.parser_interface import Parser
 
 
 class Chrome:
-    def __init__(self, timeout: int):
-        self.timeout = timeout
+    def __init__(self, delay: int):
+        self.delay = delay
 
     def __enter__(self):
         self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
@@ -21,33 +21,33 @@ class Chrome:
         self.driver.quit()
         return False
 
-    def collect_html_files(
+    def collect_html_content(
         self,
         url:str,
         master_page_parsed_classes: str,
-        clicked_classes: str,
         slave_page_parsed_classes: str,
-    ):
+        clicked_classes: str,
+    ) -> list[str]:
         self.driver.get(url)
-        sleep(self.timeout)
+        sleep(self.delay)
 
-        main_blocks = self.driver.find_elements(By.CLASS_NAME, master_page_parsed_classes)
         html_files = []
-        for i in range(len(main_blocks)):
-            main_blocks = self.driver.find_elements(By.CLASS_NAME, master_page_parsed_classes)
+        master_page_blocks = self.driver.find_elements(By.CLASS_NAME, master_page_parsed_classes)
+        for i in range(len(master_page_blocks)):
+            html_content = master_page_blocks[i].get_attribute('outerHTML')
 
-            html_file = main_blocks[i].get_attribute('outerHTML')
-            clicked_block = main_blocks[i].find_element(By.CLASS_NAME, clicked_classes)
+            clicked_block = master_page_blocks[i].find_element(By.CLASS_NAME, clicked_classes)
             self.driver.execute_script("arguments[0].click();", clicked_block)
-            sleep(self.timeout)
+            sleep(self.delay)
 
             if slave_page_parsed_classes:
-                sub_block = self.driver.find_element(By.CLASS_NAME, slave_page_parsed_classes)
-                html_file += sub_block.get_attribute('outerHTML')
+                slave_block = self.driver.find_element(By.CLASS_NAME, slave_page_parsed_classes)
+                html_content += slave_block.get_attribute('outerHTML')
                 self.driver.back()
-                sleep(self.timeout)
+                sleep(self.delay)
 
-            html_files.append(html_file)
+            html_files.append(html_content)
+            master_page_blocks = self.driver.find_elements(By.CLASS_NAME, master_page_parsed_classes)
 
         return html_files
 
@@ -55,10 +55,10 @@ class Chrome:
 
 class ChromeParser(Parser):
     def parse(self) -> list[ResultSet]:
-        chrome = Chrome(timeout=2)
+        chrome = Chrome(delay=2)
         result_sets = []
         with chrome:
-            html_files=chrome.collect_html_files(
+            html_files=chrome.collect_html_content(
                 url=self.user_answers.url,
                 master_page_parsed_classes=self.user_answers.master_page_parsed_classes,
                 clicked_classes=self.user_answers.clicked_classes,
