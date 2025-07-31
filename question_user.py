@@ -8,6 +8,7 @@ from models import user_answers
 
 def question_user() -> None:
     clear_screen()
+    user_answers.clear()
 
     ask_user(
         use_url=questionary.confirm("Использовать ссылку? Если нет, будет использовано содержимое файла files/file.htm"),
@@ -33,7 +34,7 @@ def question_user() -> None:
 def ask_user(**kwargs) -> None:
     answers_dict = questionary.form(**kwargs).ask()
     for param, answer in answers_dict.items():
-        user_answers.__setattr__(param, answer)
+        setattr(user_answers, param, answer)
 
 
 def clear_screen() -> None:
