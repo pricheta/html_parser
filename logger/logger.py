@@ -1,5 +1,5 @@
 import logging
-
+from typing import Callable
 
 logging.basicConfig(
     level=logging.INFO,
@@ -12,3 +12,11 @@ logging.basicConfig(
 
 
 logger = logging.getLogger()
+
+
+def log_calling(func: Callable):
+    def wrapper(*args, **kwargs):
+        logger.info(f"Calling {func.__name__} with {args=}, {kwargs=}")
+        return func(*args, **kwargs)
+    return wrapper
+

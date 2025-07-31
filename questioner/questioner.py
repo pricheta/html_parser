@@ -2,7 +2,7 @@ import questionary
 
 from common.constants import SSL_HEADER
 from common.utils import clear_screen
-from logger.logger import logger
+from logger.logger import logger, log_calling
 from questioner.user_answers import UserAnswers, AppMode
 
 
@@ -11,6 +11,7 @@ class Questioner:
         self.user_answers = UserAnswers()
         self.logger = logger
 
+    @log_calling
     def question_user(self) -> UserAnswers:
         clear_screen()
 

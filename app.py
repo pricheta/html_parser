@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 from uuid import UUID
 
-from logger.logger import logger
+from logger.logger import logger, log_calling
 from parsers.chrome_parser import ChromeParser
 from parsers.file_parser import FileParser
 from questioner.questioner import questioner
