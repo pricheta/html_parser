@@ -22,12 +22,12 @@ def main() -> None:
 
 def log_starting_session(session_id: UUID) -> None:
     now = datetime.now().strftime('%d.%m.%Y %H:%M')
-    logger.info(f'---------- Starting session {session_id} at {now} ----------')
+    logger.info(f'-------------------- Starting session {session_id} at {now} -------------------------')
 
 
 def log_ending_session(session_id: UUID) -> None:
     now = datetime.now().strftime('%d.%m.%Y %H:%M')
-    logger.info(f'------------ Ending session {session_id} at {now} ----------')
+    logger.info(f'---------------------- Ending session {session_id} at {now} -------------------------')
 
 
 if __name__ == "__main__":
