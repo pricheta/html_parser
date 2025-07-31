@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime
+from uuid import UUID
 
 from logger.logger import logger
 from parsers.chrome_parser import ChromeParser
@@ -8,7 +9,7 @@ from questioner.questioner import questioner
 from questioner.user_answers import AppMode
 
 
-def main():
+def main() -> None:
     user_answers = questioner.question_user()
 
     if user_answers.app_mode == AppMode.FROM_URL:
@@ -19,13 +20,20 @@ def main():
     parsed = parser.parse()
 
 
-if __name__ == "__main__":
-    session_id = uuid.uuid4()
-
+def log_starting_session(session_id: UUID) -> None:
     now = datetime.now().strftime('%d.%m.%Y %H:%M')
     logger.info(f'---------- Starting session {session_id} at {now} ----------')
 
-    main()
 
+def log_ending_session(session_id: UUID) -> None:
     now = datetime.now().strftime('%d.%m.%Y %H:%M')
     logger.info(f'------------ Ending session {session_id} at {now} ----------')
+
+
+if __name__ == "__main__":
+    session_id = uuid.uuid4()
+    log_starting_session(session_id)
+
+    main()
+
+    log_ending_session(session_id)
