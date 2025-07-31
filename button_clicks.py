@@ -1,27 +1,17 @@
 from datetime import datetime
 
 import pandas as pd
-from bs4 import BeautifulSoup, ResultSet
+from bs4 import BeautifulSoup
 
 from chrome_driver import Chrome
+from constants import FILES_DIR, HTML_FILENAME, RESULT_FILENAME, SSL_HEADER
 
-files_dir = 'files/'
-html_filename = 'file.html'
-result_file_name = 'Результат от {}.xlsx'
-ssl_link_header = 'https://'
 
 def start() -> None:
 
     chrome = Chrome(timeout=2)
     result_sets = []
 
-    url = gui.url_row.get()
-    if url and ssl_link_header not in url:
-        url = ssl_link_header + url
-
-    main_block_classes_value = gui.main_block_search_row.get()
-    click_block_classes_value = gui.click_block_search_row.get()
-    sub_block_classes_value = gui.sub_block_search_row.get()
 
     if not main_block_classes_value:
         return
@@ -45,7 +35,7 @@ def start() -> None:
             result_sets.append(result_set)
 
     else:
-        with open(files_dir + html_filename, "r", encoding="utf-8") as html_file:
+        with open(FILES_DIR + HTML_FILENAME, "r", encoding="utf-8") as html_file:
             bs = BeautifulSoup(html_file, features="html.parser")
         result_sets = [bs.find_all(class_=[main_block_classes_value, ]), ]
 
@@ -60,5 +50,5 @@ def start() -> None:
 
     result_list = sorted(result_list, key=lambda x: len(x))
     result_df: pd.DataFrame = pd.DataFrame(data=result_list)
-    result_df.to_excel(files_dir + result_file_name.format(datetime.now().strftime("%d.%m %H-%M") ))
+    result_df.to_excel(FILES_DIR + RESULT_FILENAME.format(datetime.now().strftime("%d.%m %H-%M")))
     gui.start_button["text"] = "Файл выгружен"
