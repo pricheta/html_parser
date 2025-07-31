@@ -7,7 +7,6 @@ from questioner.user_answers import AppMode
 
 if __name__ == "__main__":
     user_answers = questioner.question_user()
-    logger.info(user_answers.model_dump())
 
     if user_answers.app_mode == AppMode.FROM_URL:
         parser = ChromeParser(user_answers)

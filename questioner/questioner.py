@@ -2,12 +2,14 @@ import questionary
 
 from common.constants import SSL_HEADER
 from common.utils import clear_screen
+from logger.logger import logger
 from questioner.user_answers import UserAnswers, AppMode
 
 
 class Questioner:
     def __init__(self):
         self.user_answers = UserAnswers()
+        self.logger = logger
 
     def question_user(self) -> UserAnswers:
         clear_screen()
@@ -38,12 +40,16 @@ class Questioner:
                 master_page_parsed_classes=questionary.text("Введи классы элементов для парсинга на странице:", validate=bool),
             )
 
+        self._log_answers()
         return self.user_answers
 
     def _ask_user(self, **kwargs) -> None:
         answers_dict = questionary.form(**kwargs).ask()
         for param, answer in answers_dict.items():
             setattr(self.user_answers, param, answer)
+
+    def _log_answers(self) -> None:
+        self.logger.info(self.user_answers.model_dump())
 
 
 questioner = Questioner()
