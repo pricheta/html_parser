@@ -27,9 +27,7 @@ def s() -> None:
             result_sets.append(result_set)
 
     else:
-        with open(FILES_DIR + HTML_FILENAME, "r", encoding="utf-8") as html_file:
-            bs = BeautifulSoup(html_file, features="html.parser")
-        result_sets = [bs.find_all(class_=[main_block_classes_value, ]), ]
+
 
     result_list: list[list[str]] = []
     for result_set in result_sets:
