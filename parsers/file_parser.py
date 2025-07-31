@@ -1,6 +1,6 @@
 from bs4 import ResultSet, BeautifulSoup
 
-from constants import FILES_DIR, HTML_FILENAME
+from common.constants import FILES_DIR, HTML_FILENAME
 from parsers.parser_interface import Parser
 
 

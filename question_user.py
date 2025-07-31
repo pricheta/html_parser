@@ -1,7 +1,7 @@
 import questionary
 
 from common import clear_screen
-from constants import SSL_HEADER
+from common.constants import SSL_HEADER
 from user_answers import UserAnswers
 
 class Questionary:

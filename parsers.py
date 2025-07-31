@@ -1,10 +1,8 @@
 from datetime import datetime
 
 import pandas as pd
-from bs4 import BeautifulSoup
 
-from parsers.chrome_parser import Chrome
-from constants import FILES_DIR, HTML_FILENAME, RESULT_FILENAME
+from common.constants import FILES_DIR, RESULT_FILENAME
 
 
 def s() -> None:
