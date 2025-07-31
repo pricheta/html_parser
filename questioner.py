@@ -1,10 +1,11 @@
 import questionary
 
-from common import clear_screen
 from common.constants import SSL_HEADER
+from common.utils import clear_screen
 from user_answers import UserAnswers
 
-class Questionary:
+
+class Questioner:
     def __init__(self):
         self.user_answers = UserAnswers()
 
@@ -36,7 +37,6 @@ class Questionary:
             )
 
         return self.user_answers
-
 
     def _ask_user(self, **kwargs) -> None:
         answers_dict = questionary.form(**kwargs).ask()
