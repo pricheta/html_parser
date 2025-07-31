@@ -59,7 +59,7 @@ class ChromeParser(Parser):
     @log_calling
     def parse(self) -> list[ResultSet]:
         chrome = Chrome(delay=2)
-        result_sets = []
+        parse_result = []
         with chrome:
             html_files=chrome.collect_html_content(
                 url=self.user_answers.url,
@@ -71,7 +71,7 @@ class ChromeParser(Parser):
         for html_file in html_files:
             bs = BeautifulSoup(html_file, features="html.parser")
             result_set = bs.find_all(class_=[self.user_answers.master_page_parsed_classes, self.user_answers.slave_page_parsed_classes])
-            result_sets.append(result_set)
+            parse_result.append(result_set)
 
-        self._log_parse_result(result_sets)
-        return result_sets
+        self._log_parse_result(parse_result)
+        return parse_result

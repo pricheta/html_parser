@@ -10,6 +10,7 @@ class FileParser(Parser):
     def parse(self) -> list[ResultSet]:
         with open(FILES_DIR + HTML_FILENAME, "r", encoding="utf-8") as file:
             bs = BeautifulSoup(file, features="html.parser")
-        result_sets = [bs.find_all(class_=[self.user_answers.master_page_parsed_classes, ]), ]
-        self._log_parse_result(result_sets)
-        return result_sets
+
+        parse_result = [bs.find_all(class_=[self.user_answers.master_page_parsed_classes, ]), ]
+        self._log_parse_result(parse_result)
+        return parse_result
