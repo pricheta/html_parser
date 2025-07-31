@@ -11,7 +11,7 @@ logging.basicConfig(
 )
 
 
-logging = logging.getLogger()
+logger = logging.getLogger()
 
 
 def log_calling(func: Callable):
