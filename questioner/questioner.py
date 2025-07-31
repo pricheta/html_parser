@@ -2,7 +2,7 @@ import questionary
 
 from common.constants import SSL_HEADER
 from common.utils import clear_screen
-from user_answers import UserAnswers, AppMode
+from questioner.user_answers import UserAnswers, AppMode
 
 
 class Questioner:
