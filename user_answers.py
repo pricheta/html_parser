@@ -18,4 +18,3 @@ class UserAnswers(BaseModel):
         return self
 
 
-user_answers = UserAnswers()
