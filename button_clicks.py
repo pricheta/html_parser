@@ -11,7 +11,6 @@ result_file_name = 'Результат от {}.xlsx'
 ssl_link_header = 'https://'
 
 def start() -> None:
-    from gui import gui, pack_element
 
     chrome = Chrome(timeout=2)
     result_sets = []
@@ -25,7 +24,6 @@ def start() -> None:
     sub_block_classes_value = gui.sub_block_search_row.get()
 
     if not main_block_classes_value:
-        gui.main_block_search_label['text'] = 'Введи класс(ы) нужных элементов \nНе указан класс основных элементов!'
         return
 
     if click_block_classes_value and not sub_block_classes_value:
