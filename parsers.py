@@ -9,24 +9,8 @@ from constants import FILES_DIR, HTML_FILENAME, RESULT_FILENAME
 
 def s() -> None:
 
-    chrome = Chrome(timeout=2)
-    result_sets = []
 
 
-        with chrome:
-            html_files=chrome.collect_html_files(
-                url=url,
-                main_block_classes_value=main_block_classes_value,
-                click_block_classes_value=click_block_classes_value,
-                sub_block_classes_value=sub_block_classes_value,
-            )
-
-        for html_file in html_files:
-            bs = BeautifulSoup(html_file, features="html.parser")
-            result_set = bs.find_all(class_=[main_block_classes_value, sub_block_classes_value])
-            result_sets.append(result_set)
-
-    else:
 
 
     result_list: list[list[str]] = []
