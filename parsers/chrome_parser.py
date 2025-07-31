@@ -73,4 +73,5 @@ class ChromeParser(Parser):
             result_set = bs.find_all(class_=[self.user_answers.master_page_parsed_classes, self.user_answers.slave_page_parsed_classes])
             result_sets.append(result_set)
 
+        self._log_parse_result(result_sets)
         return result_sets
