@@ -12,6 +12,7 @@ class UserAnswers(BaseModel):
     app_mode: Optional[AppMode] = None
 
     get_to_slave_page: Optional[bool] = None
+    scroll_required: Optional[bool] = None
 
     url: Optional[str] = None
     master_page_parsed_classes: Optional[str] = None
