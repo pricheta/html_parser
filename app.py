@@ -18,7 +18,7 @@ def main() -> None:
     else:
         parser = FileParser(user_answers)
 
-    parsed = parser.parse()
+    parse_result = parser.parse()
 
 
 @contextmanager
