@@ -1,5 +1,6 @@
 import uuid
-from datetime import datetime
+from contextlib import contextmanager
+from datetime import datetime, UTC
 from uuid import UUID
 
 from logger.logger import logger
@@ -20,20 +21,17 @@ def main() -> None:
     parsed = parser.parse()
 
 
-def log_starting_session(session_id: UUID) -> None:
-    now = datetime.now().strftime('%d.%m.%Y %H:%M')
-    logger.info(f'-------------------- Starting session {session_id} at {now} -------------------------')
-
-
-def log_ending_session(session_id: UUID) -> None:
-    now = datetime.now().strftime('%d.%m.%Y %H:%M')
-    logger.info(f'---------------------- Ending session {session_id} at {now} -------------------------\n\n\n')
+@contextmanager
+def session(session_id: UUID) -> None:
+    now = datetime.now(UTC).strftime('%d.%m.%Y %H:%M UTC')
+    logger.info(f'-------------------- Starting session {session_id} at {now} ---------------------')
+    yield
+    now = datetime.now(UTC).strftime('%d.%m.%Y %H:%M UTC')
+    logger.info(f'---------------------- Ending session {session_id} at {now} ---------------------\n\n\n')
 
 
 if __name__ == "__main__":
     session_id = uuid.uuid4()
-    log_starting_session(session_id)
 
-    main()
-
-    log_ending_session(session_id)
+    with session(session_id=session_id):
+        main()

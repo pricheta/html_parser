@@ -2,6 +2,7 @@ from time import sleep
 
 from bs4 import BeautifulSoup, ResultSet
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
@@ -15,7 +16,10 @@ class Chrome:
         self.delay = delay
 
     def __enter__(self):
-        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+        options = Options()
+        options.add_argument("--log-level=3")
+        options.add_experimental_option("excludeSwitches", ["enable-logging"])
+        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
         return self.driver
 
     def __exit__(self, exc_type, exc_val, exc_tb):

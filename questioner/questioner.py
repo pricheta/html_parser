@@ -50,7 +50,7 @@ class Questioner:
             setattr(self.user_answers, param, answer)
 
     def _log_answers(self) -> None:
-        self.logger.info(f'User answered - {self.user_answers.model_dump()}')
+        self.logger.info(f'User answered - {self.user_answers.model_dump(exclude_none=True)}')
 
 
 questioner = Questioner()
