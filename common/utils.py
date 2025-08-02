@@ -1,5 +1,5 @@
 import os
-from datetime import datetime, UTC
+from datetime import datetime, UTC, timezone
 
 from common.constants import DATETIME_PATTERN
 
@@ -11,8 +11,8 @@ def clear_screen() -> None:
     os.system(command)
 
 
-def get_now_utc() -> datetime:
-    return datetime.now(UTC)
+def get_now_utc(tz: timezone = UTC) -> datetime:
+    return datetime.now(tz)
 
 
 def get_now_utc_str() -> str:

@@ -4,8 +4,8 @@ from uuid import UUID
 
 import pandas as pd
 
-from common.constants import FILES_DIR, RESULT_FILENAME
-from common.utils import get_now_utc_str
+from common.constants import FILES_DIR, RESULT_FILENAME, RESULT_FILENAME_DATETIME_PATTERN, MSK_TIMEZONE
+from common.utils import get_now_utc_str, get_now_utc
 from logger.logger import logger
 from parsers.chrome_parser import ChromeParser
 from parsers.file_parser import FileParser
@@ -24,13 +24,14 @@ def main() -> None:
     parse_result = parser.parse()
 
     result_list: list[list[str]] = []
-    for element in parse_result:
-        element_info: list[str] = [value for value in element.stripped_strings]
-        result_list.append(element_info)
+    for result_set in parse_result:
+        for element in result_set:
+            element_info: list[str] = [value for value in element.stripped_strings]
+            result_list.append(element_info)
 
     result_list = sorted(result_list, key=lambda x: len(x))
     result_df: pd.DataFrame = pd.DataFrame(data=result_list)
-    result_df.to_excel(FILES_DIR + RESULT_FILENAME.format(get_now_utc_str()))
+    result_df.to_excel(FILES_DIR + RESULT_FILENAME.format(get_now_utc(MSK_TIMEZONE).strftime(RESULT_FILENAME_DATETIME_PATTERN)))
 
 
 @contextmanager
