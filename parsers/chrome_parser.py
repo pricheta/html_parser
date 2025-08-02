@@ -7,7 +7,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 
-from logger.logger import log_calling
+from logger.logger import log_calling, logger
 from parsers.parser_interface import Parser
 
 
@@ -31,8 +31,8 @@ class Chrome:
         self,
         url:str,
         master_page_parsed_classes: str,
-        slave_page_parsed_classes: str,
-        clicked_classes: str,
+        clicked_classes: str | None,
+        slave_page_parsed_classes: str | None,
     ) -> list[str]:
         self.driver.get(url)
         sleep(self.delay)
@@ -42,11 +42,11 @@ class Chrome:
         for i in range(len(master_page_blocks)):
             html_content = master_page_blocks[i].get_attribute('outerHTML')
 
-            clicked_block = master_page_blocks[i].find_element(By.CLASS_NAME, clicked_classes)
-            self.driver.execute_script("arguments[0].click();", clicked_block)
-            sleep(self.delay)
+            if clicked_classes:
+                clicked_block = master_page_blocks[i].find_element(By.CLASS_NAME, clicked_classes)
+                self.driver.execute_script("arguments[0].click();", clicked_block)
+                sleep(self.delay)
 
-            if slave_page_parsed_classes:
                 slave_block = self.driver.find_element(By.CLASS_NAME, slave_page_parsed_classes)
                 html_content += slave_block.get_attribute('outerHTML')
                 self.driver.back()
