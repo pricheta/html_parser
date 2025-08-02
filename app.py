@@ -23,14 +23,8 @@ def main() -> None:
 
     parse_result = parser.parse()
 
-    result_list: list[list[str]] = []
-    for result_set in parse_result:
-        for element in result_set:
-            element_info: list[str] = [value for value in element.stripped_strings]
-            result_list.append(element_info)
-
-    result_list = sorted(result_list, key=lambda x: len(x))
-    result_df: pd.DataFrame = pd.DataFrame(data=result_list)
+    parse_result = sorted(parse_result, key=lambda x: len(x))
+    result_df: pd.DataFrame = pd.DataFrame(data=parse_result)
     result_df.to_excel(FILES_DIR + RESULT_FILENAME.format(get_now_utc(MSK_TIMEZONE).strftime(RESULT_FILENAME_DATETIME_PATTERN)))
 
 

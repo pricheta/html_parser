@@ -1,13 +1,13 @@
 from time import sleep
 
-from bs4 import BeautifulSoup, ResultSet
+from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 
-from logger.logger import log_calling, logger
+from logger.logger import log_calling
 from parsers.parser_interface import Parser
 
 
@@ -61,7 +61,7 @@ class Chrome:
 
 class ChromeParser(Parser):
     @log_calling
-    def parse(self) -> list[ResultSet]:
+    def parse(self) -> list[list[str]]:
         chrome = Chrome(delay=2)
         parse_result = []
         with chrome:
@@ -74,7 +74,8 @@ class ChromeParser(Parser):
 
         for html_file in html_files:
             bs = BeautifulSoup(html_file, features="html.parser")
-            result_set = bs.find_all(class_=[self.user_answers.master_page_parsed_classes, self.user_answers.slave_page_parsed_classes])
+            result_set = bs.find_all()
+            result_set = [v.get_text(strip=True) for v in result_set]
             parse_result.append(result_set)
 
         self._log_parse_result(parse_result)

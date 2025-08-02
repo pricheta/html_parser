@@ -12,8 +12,8 @@ class  Parser(ABC):
         self.logger = logger
 
     @abstractmethod
-    def parse(self) -> list[ResultSet]:
+    def parse(self) -> list[list[str]]:
         ...
 
-    def _log_parse_result(self, parse_result: list[ResultSet]):
+    def _log_parse_result(self, parse_result: list[list[str]]):
         self.logger.info(f'Parsed result - {parse_result}')
