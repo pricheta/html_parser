@@ -1,8 +1,11 @@
 import uuid
 from contextlib import contextmanager
-from datetime import datetime, UTC
 from uuid import UUID
 
+import pandas as pd
+
+from common.constants import FILES_DIR, RESULT_FILENAME
+from common.utils import get_now_utc_str
 from logger.logger import logger
 from parsers.chrome_parser import ChromeParser
 from parsers.file_parser import FileParser
@@ -20,14 +23,21 @@ def main() -> None:
 
     parse_result = parser.parse()
 
+    result_list: list[list[str]] = []
+    for element in parse_result:
+        element_info: list[str] = [value for value in element.stripped_strings]
+        result_list.append(element_info)
+
+    result_list = sorted(result_list, key=lambda x: len(x))
+    result_df: pd.DataFrame = pd.DataFrame(data=result_list)
+    result_df.to_excel(FILES_DIR + RESULT_FILENAME.format(get_now_utc_str()))
+
 
 @contextmanager
 def session(session_id: UUID) -> None:
-    now = datetime.now(UTC).strftime('%d.%m.%Y %H:%M UTC')
-    logger.info(f'-------------------- Starting session {session_id} at {now} ---------------------')
+    logger.info(f'-------------------- Starting session {session_id} at {get_now_utc_str()} ---------------------')
     yield
-    now = datetime.now(UTC).strftime('%d.%m.%Y %H:%M UTC')
-    logger.info(f'---------------------- Ending session {session_id} at {now} ---------------------\n\n\n')
+    logger.info(f'---------------------- Ending session {session_id} at {get_now_utc_str()} ---------------------\n\n\n')
 
 
 if __name__ == "__main__":
