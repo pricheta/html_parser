@@ -2,7 +2,6 @@ from enum import StrEnum
 from typing import Optional, Self
 
 from pydantic import BaseModel, field_validator, ConfigDict
-from pydantic.v1 import root_validator, validator
 
 from common.constants import SSL_HEADER
 
