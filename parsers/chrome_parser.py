@@ -38,22 +38,31 @@ class Chrome:
         sleep(self.delay)
 
         html_files = []
+        main_window = self.driver.current_window_handle
+        current_url = self.driver.current_url
         master_page_blocks = self.driver.find_elements(By.CLASS_NAME, master_page_parsed_classes)
+
         for i in range(len(master_page_blocks)):
+            master_page_blocks = self.driver.find_elements(By.CLASS_NAME, master_page_parsed_classes)
             html_content = master_page_blocks[i].get_attribute('outerHTML')
 
             if clicked_classes:
+                self.driver.execute_script(f"window.open('{current_url}', '_blank');")
+                new_window = [window for window in self.driver.window_handles if window != main_window][0]
+                self.driver.switch_to.window(new_window)
+
+                master_page_blocks = self.driver.find_elements(By.CLASS_NAME, master_page_parsed_classes)
                 clicked_block = master_page_blocks[i].find_element(By.CLASS_NAME, clicked_classes)
                 self.driver.execute_script("arguments[0].click();", clicked_block)
                 sleep(self.delay)
 
                 slave_block = self.driver.find_element(By.CLASS_NAME, slave_page_parsed_classes)
                 html_content += slave_block.get_attribute('outerHTML')
-                self.driver.back()
-                sleep(self.delay)
+
+                self.driver.close()
+                self.driver.switch_to.window(main_window)
 
             html_files.append(html_content)
-            master_page_blocks = self.driver.find_elements(By.CLASS_NAME, master_page_parsed_classes)
 
         return html_files
 
