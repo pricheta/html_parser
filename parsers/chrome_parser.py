@@ -3,7 +3,6 @@ from time import time, sleep
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from selenium.common import NoSuchElementException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
@@ -17,7 +16,6 @@ from questioner.user_answers import UserAnswers, MasterSlaveMode
 class Chrome:
     def __init__(self, user_answers: UserAnswers):
         self.user_answers = user_answers
-        self.logger = logger
         self.driver: webdriver.Chrome | None = None
 
     def __enter__(self):
@@ -60,8 +58,7 @@ class Chrome:
                     elif self.user_answers.master_slave_mode == MasterSlaveMode.CLICK_INNER_TAG:
                         clicked_block = current_master_page_block.find_element(By.CSS_SELECTOR, self.user_answers.clicked_selector)
                     else:
-                        self.logger.info(f'{self.user_answers.master_slave_mode} mode not supported')
-                        raise
+                        raise ValueError(f'{self.user_answers.master_slave_mode} mode not supported')
 
                     self.driver.execute_script("arguments[0].click();", clicked_block)
                     self._wait_till_page_loaded()
@@ -74,7 +71,7 @@ class Chrome:
                 html_files.append(html_content)
                 element_number += 1
         except Exception as e:
-            self.logger.info(f"Error occurred at {element_number=}, process continued. {e}")
+            logger.info(f"Error occurred at {element_number=}, process continued. {e}")
 
         return html_files
 
