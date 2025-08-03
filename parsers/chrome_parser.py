@@ -14,7 +14,7 @@ from parsers.parser_interface import Parser
 
 
 class Chrome:
-    def __init__(self, delay: int, scroll_required: bool):
+    def __init__(self, delay: float, scroll_required: bool):
         self.delay = delay
         self.scroll_required = scroll_required
 
@@ -72,9 +72,7 @@ class Chrome:
         return html_files
 
     def _wait_till_page_loaded(self):
-        WebDriverWait(self.driver, self.delay).until(
-            lambda d: d.execute_script("return document.readyState") == "complete"
-        )
+        sleep(self.delay)
 
     def _scroll_to_bottom_with_wait(self):
         previous_height = self.driver.execute_script("return document.body.scrollHeight")
@@ -88,7 +86,7 @@ class Chrome:
 class ChromeParser(Parser):
     @log_calling
     def parse(self) -> list[list[str]]:
-        chrome = Chrome(delay=2, scroll_required=self.user_answers.scroll_required)
+        chrome = Chrome(delay=float(self.user_answers.delay), scroll_required=self.user_answers.scroll_required)
         parse_result = []
         with chrome:
             html_files=chrome.collect_html_content(

@@ -35,6 +35,9 @@ class Questioner:
                     clicked_classes=questionary.text("Введи классы элементов, на которые нужно нажать для перехода на вторичные страницу:", validate=bool),
                     slave_page_parsed_classes=questionary.text("Введи классы элементов для парсинга на вторичных страницах:", validate=bool),
                 )
+            self._ask_user(
+                delay=questionary.text("Введи задержку между действиями:", validate=bool),
+            )
             if SSL_HEADER not in self.user_answers.url:
                 self.user_answers.url = SSL_HEADER + self.user_answers.url
         else:

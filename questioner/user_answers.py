@@ -19,6 +19,8 @@ class UserAnswers(BaseModel):
     clicked_classes: Optional[str] = None
     slave_page_parsed_classes: Optional[str] = None
 
+    delay: Optional[str] = None
+
     def clear(self) -> Self:
         for field in self.__pydantic_fields__:
             setattr(self, field, None)
