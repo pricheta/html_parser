@@ -6,17 +6,18 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
-from logger.logger import log_calling
+from logger.logger import log_calling, logger
 from parsers.parser_interface import Parser
+from questioner.user_answers import UserAnswers, MasterSlaveMode
 
 
 class Chrome:
-    def __init__(self, delay: float, scroll_required: bool):
-        self.delay = delay
-        self.scroll_required = scroll_required
+    def __init__(self, user_answers: UserAnswers):
+        self.user_answers = user_answers
+        self.logger = logger
+        self.driver: webdriver.Chrome | None = None
 
     def __enter__(self):
         options = Options()
@@ -30,42 +31,40 @@ class Chrome:
         return False
 
     @log_calling
-    def collect_html_content(
-        self,
-        url:str,
-        master_page_parsed_classes: str,
-        clicked_classes: str | None,
-        slave_page_parsed_classes: str | None,
-    ) -> list[str]:
+    def collect_html_content(self,) -> list[str]:
         html_files = []
 
-        self.driver.get(url)
+        self.driver.get(self.user_answers.url)
         self._wait_till_page_loaded()
 
         element_number = 0
         while True:
-            master_page_blocks = self.driver.find_elements(By.CLASS_NAME, master_page_parsed_classes)
+            master_page_blocks = self.driver.find_elements(By.CLASS_NAME, self.user_answers.master_page_parsed_classes)
 
             if element_number >= len(master_page_blocks):
-                if self.scroll_required:
+                if self.user_answers.scroll_required:
                     diff = self._scroll_to_bottom_with_wait()
                     if not diff:
                         break
                     continue
                 break
 
-            html_content = master_page_blocks[element_number].get_attribute('outerHTML')
+            current_master_page_block = master_page_blocks[element_number]
+            html_content = current_master_page_block.get_attribute('outerHTML')
 
-            if clicked_classes:
-                if clicked_classes == master_page_parsed_classes:
-                    clicked_block = master_page_blocks[element_number]
+            if self.user_answers.master_slave_mode != MasterSlaveMode.MASTER_SLAVE_MODE_OFF:
+                if self.user_answers.master_slave_mode == MasterSlaveMode.CLICK_MASTER_TAG:
+                    clicked_block = current_master_page_block
+                elif self.user_answers.master_slave_mode == MasterSlaveMode.CLICK_INNER_TAG:
+                    clicked_block = current_master_page_block.find_element(By.CLASS_NAME,self.user_answers.clicked_classes)
                 else:
-                    clicked_block = master_page_blocks[element_number].find_element(By.CLASS_NAME, clicked_classes)
+                    self.logger.info(f'{self.user_answers.master_slave_mode} mode not supported')
+                    raise
 
                 self.driver.execute_script("arguments[0].click();", clicked_block)
                 self._wait_till_page_loaded()
 
-                slave_block = self.driver.find_element(By.CLASS_NAME, slave_page_parsed_classes)
+                slave_block = self.driver.find_element(By.CLASS_NAME, self.user_answers.slave_page_parsed_classes)
                 html_content += slave_block.get_attribute('outerHTML')
                 self.driver.back()
                 self._wait_till_page_loaded()
@@ -76,7 +75,7 @@ class Chrome:
         return html_files
 
     def _wait_till_page_loaded(self):
-        sleep(self.delay)
+        sleep(float(self.user_answers.delay))
 
     def _scroll_to_bottom_with_wait(self):
         previous_height = self.driver.execute_script("return document.body.scrollHeight")
@@ -90,15 +89,10 @@ class Chrome:
 class ChromeParser(Parser):
     @log_calling
     def parse(self) -> list[list[str]]:
-        chrome = Chrome(delay=float(self.user_answers.delay), scroll_required=self.user_answers.scroll_required)
+        chrome = Chrome(self.user_answers)
         parse_result = []
         with chrome:
-            html_files=chrome.collect_html_content(
-                url=self.user_answers.url,
-                master_page_parsed_classes=self.user_answers.master_page_parsed_classes,
-                clicked_classes=self.user_answers.clicked_classes,
-                slave_page_parsed_classes=self.user_answers.slave_page_parsed_classes,
-            )
+            html_files=chrome.collect_html_content()
 
         for html_file in html_files:
             bs = BeautifulSoup(html_file, features="html.parser")

@@ -43,9 +43,3 @@ class UserAnswers(BaseModel):
         if v and not v.startswith(('http://', 'https://')):
             return SSL_HEADER + v
         return v
-
-    @validator('master_page_parsed_classes')
-    def __sync_clicked_classes(self, v):
-        if self.master_slave_mode == MasterSlaveMode.CLICK_MASTER_TAG:
-            self.clicked_classes = self.master_page_parsed_classes
-        return v
