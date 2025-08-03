@@ -39,7 +39,10 @@ if __name__ == "__main__":
     session_id = uuid.uuid4()
 
     with session(session_id=session_id):
-        main()
+        try:
+            main()
+        except Exception as e:
+            logger.info(f"Common error occurred, {e}")
 
 
 

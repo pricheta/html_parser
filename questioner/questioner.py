@@ -21,6 +21,11 @@ class Questioner:
         else:
             self._ask_about_file_mode()
 
+        self._ask_user(advanced_settings_on=questionary.confirm("Использовать продвинутые настройки?", default=False))
+        if self.user_answers.advanced_settings_on:
+            self._ask_user(start_element_number=questionary.text("Введи номер начального элемента:", validate=bool))
+            self._ask_user(delay=questionary.text("Введи задержку между действиями:", validate=bool))
+
         self._log_answers()
         return self.user_answers
 
@@ -43,8 +48,6 @@ class Questioner:
 
         if self.user_answers.master_slave_mode in (MasterSlaveMode.CLICK_MASTER_TAG, MasterSlaveMode.CLICK_INNER_TAG):
             self._ask_user(slave_page_parsed_selector=questionary.text("Введи селектор элементов для парсинга на вторичных страницах:", validate=bool))
-
-        self._ask_user(delay=questionary.text("Введи задержку между действиями:", validate=bool))
 
     def _ask_about_file_mode(self):
         self._ask_user(master_page_parsed_selector=questionary.text("Введи селектор элементов для парсинга на странице:", validate=bool))

@@ -4,6 +4,7 @@ from typing import Optional, Self
 from pydantic import BaseModel, field_validator, ConfigDict
 
 from common.constants import SSL_HEADER
+from logger.logger import logger
 
 
 class AppMode(StrEnum):
@@ -30,7 +31,9 @@ class UserAnswers(BaseModel):
     clicked_selector: Optional[str] = None
     slave_page_parsed_selector: Optional[str] = None
 
-    delay: Optional[str] = None
+    advanced_settings_on: Optional[bool] = None
+    start_element_number: Optional[str] = "0"
+    delay: Optional[str] = "2"
 
     def clear(self) -> Self:
         for field in self.__pydantic_fields__:
@@ -41,4 +44,10 @@ class UserAnswers(BaseModel):
     def __add_ssl_header(cls, v):
         if v and not v.startswith(('http://', 'https://')):
             return SSL_HEADER + v
+        return v
+
+    @field_validator('start_element_number')
+    def __validate_start_element_number(cls, v):
+        if v <= 0:
+            raise ValueError('start_element_number can\'t be less than or equal to 0')
         return v
