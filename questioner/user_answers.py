@@ -27,9 +27,9 @@ class UserAnswers(BaseModel):
     scroll_required: Optional[bool] = None
 
     url: Optional[str] = None
-    master_page_parsed_classes: Optional[str] = None
-    clicked_classes: Optional[str] = None
-    slave_page_parsed_classes: Optional[str] = None
+    master_page_parsed_selector: Optional[str] = None
+    clicked_selector: Optional[str] = None
+    slave_page_parsed_selector: Optional[str] = None
 
     delay: Optional[str] = None
 

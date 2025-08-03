@@ -39,7 +39,7 @@ class Chrome:
 
         element_number = 0
         while True:
-            master_page_blocks = self.driver.find_elements(By.CLASS_NAME, self.user_answers.master_page_parsed_classes)
+            master_page_blocks = self.driver.find_elements(By.CSS_SELECTOR, self.user_answers.master_page_parsed_selector)
 
             if element_number >= len(master_page_blocks):
                 if self.user_answers.scroll_required:
@@ -56,7 +56,7 @@ class Chrome:
                 if self.user_answers.master_slave_mode == MasterSlaveMode.CLICK_MASTER_TAG:
                     clicked_block = current_master_page_block
                 elif self.user_answers.master_slave_mode == MasterSlaveMode.CLICK_INNER_TAG:
-                    clicked_block = current_master_page_block.find_element(By.CLASS_NAME,self.user_answers.clicked_classes)
+                    clicked_block = current_master_page_block.find_element(By.CSS_SELECTOR, self.user_answers.clicked_selector)
                 else:
                     self.logger.info(f'{self.user_answers.master_slave_mode} mode not supported')
                     raise
@@ -64,7 +64,7 @@ class Chrome:
                 self.driver.execute_script("arguments[0].click();", clicked_block)
                 self._wait_till_page_loaded()
 
-                slave_block = self.driver.find_element(By.CLASS_NAME, self.user_answers.slave_page_parsed_classes)
+                slave_block = self.driver.find_element(By.CSS_SELECTOR, self.user_answers.slave_page_parsed_selector)
                 html_content += slave_block.get_attribute('outerHTML')
                 self.driver.back()
                 self._wait_till_page_loaded()
