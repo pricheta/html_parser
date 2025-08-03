@@ -9,3 +9,7 @@ SSL_HEADER = 'https://'
 
 MSK_TIMEZONE = pytz.timezone('Europe/Moscow')
 DATETIME_PATTERN = '%d.%m.%Y %H:%M UTC'
+
+
+LOG_FILENAME = 'logs.log'
+LOG_FILE_MAX_SIZE_BYTES = 512 * 1024
