@@ -1,4 +1,5 @@
-from time import sleep
+from time import time, sleep
+
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -37,36 +38,36 @@ class Chrome:
         slave_page_parsed_classes: str | None,
     ) -> list[str]:
         html_files = []
-        main_window = self.driver.current_window_handle
 
         self.driver.get(url)
         self._wait_till_page_loaded()
 
-        if self.scroll_required:
-            self._scroll_to_bottom_with_wait()
-
-        master_page_blocks = self.driver.find_elements(By.CLASS_NAME, master_page_parsed_classes)
-
-        for i in range(len(master_page_blocks)):
+        element_number = 0
+        while True:
             master_page_blocks = self.driver.find_elements(By.CLASS_NAME, master_page_parsed_classes)
-            html_content = master_page_blocks[i].get_attribute('outerHTML')
+
+            if element_number >= len(master_page_blocks):
+                if self.scroll_required:
+                    diff = self._scroll_to_bottom_with_wait()
+                    if not diff:
+                        break
+                    continue
+                break
+
+            html_content = master_page_blocks[element_number].get_attribute('outerHTML')
 
             if clicked_classes:
-                new_window = self._duplicate_tab_full()
-                self.driver.switch_to.window(new_window)
-
-                master_page_blocks = self.driver.find_elements(By.CLASS_NAME, master_page_parsed_classes)
-                clicked_block = master_page_blocks[i].find_element(By.CLASS_NAME, clicked_classes)
+                clicked_block = master_page_blocks[element_number].find_element(By.CLASS_NAME, clicked_classes)
                 self.driver.execute_script("arguments[0].click();", clicked_block)
                 self._wait_till_page_loaded()
 
                 slave_block = self.driver.find_element(By.CLASS_NAME, slave_page_parsed_classes)
                 html_content += slave_block.get_attribute('outerHTML')
-
-                self.driver.close()
-                self.driver.switch_to.window(main_window)
+                self.driver.back()
+                self._wait_till_page_loaded()
 
             html_files.append(html_content)
+            element_number += 1
 
         return html_files
 
@@ -75,60 +76,12 @@ class Chrome:
             lambda d: d.execute_script("return document.readyState") == "complete"
         )
 
-
     def _scroll_to_bottom_with_wait(self):
-        last_height = self.driver.execute_script("return document.body.scrollHeight")
-        while True:
-            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            try:
-                WebDriverWait(self.driver, self.delay).until(
-                    lambda d: d.execute_script("return document.body.scrollHeight") > last_height
-                )
-                last_height = self.driver.execute_script("return document.body.scrollHeight")
-            except:
-                break
-
-    def _duplicate_tab_full(self):
-        state = {
-            'url': self.driver.current_url,
-            'scroll': self.driver.execute_script("return [window.pageXOffset, window.pageYOffset];"),
-            'html': self.driver.execute_script("return document.documentElement.outerHTML;"),
-            'cookies': self.driver.get_cookies(),
-            'local_storage': self.driver.execute_script("return JSON.stringify(localStorage);"),
-            'session_storage': self.driver.execute_script("return JSON.stringify(sessionStorage);")
-        }
-
-        safe_html = state['html'].replace('\\', '\\\\').replace('`', '\\`').replace('$', '\\$')
-
-        self.driver.switch_to.new_window('tab')
-
-        self.driver.execute_script("document.open();")
-        self.driver.execute_script(f"document.write(`{safe_html}`);")
-        self.driver.execute_script("document.close();")
-
-        self.driver.execute_script(f"window.scrollTo({state['scroll'][0]}, {state['scroll'][1]});")
-        self.driver.execute_script(f"history.replaceState(null, null, `{state['url']}`);")
-
-        self.driver.execute_script(f"""
-            const localStorageData = JSON.parse(`{state['local_storage']}`);
-            const sessionStorageData = JSON.parse(`{state['session_storage']}`);
-
-            for (const key in localStorageData) {{
-                localStorage.setItem(key, localStorageData[key]);
-            }}
-
-            for (const key in sessionStorageData) {{
-                sessionStorage.setItem(key, sessionStorageData[key]);
-            }}
-        """)
-
-        for cookie in state['cookies']:
-            try:
-                self.driver.add_cookie(cookie)
-            except:
-                continue
-
-        return self.driver.current_window_handle
+        previous_height = self.driver.execute_script("return document.body.scrollHeight")
+        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        self._wait_till_page_loaded()
+        current_height = self.driver.execute_script("return document.body.scrollHeight")
+        return current_height - previous_height
 
 
 
