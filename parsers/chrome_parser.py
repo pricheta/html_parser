@@ -74,8 +74,7 @@ class ChromeParser(Parser):
 
         for html_file in html_files:
             bs = BeautifulSoup(html_file, features="html.parser")
-            result_set = bs.find_all()
-            result_set = [v.get_text(strip=True) for v in result_set]
+            result_set = bs.get_text(strip=True, separator="\n").split(sep="\n")
             parse_result.append(result_set)
 
         self._log_parse_result(parse_result)
