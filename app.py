@@ -42,7 +42,7 @@ if __name__ == "__main__":
         try:
             main()
         except Exception as e:
-            logger.info(f"Common error occurred, {e}")
+            logger.error(f"Common error occurred, {e}")
 
 
 

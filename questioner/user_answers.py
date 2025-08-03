@@ -31,9 +31,9 @@ class UserAnswers(BaseModel):
     clicked_selector: Optional[str] = None
     slave_page_parsed_selector: Optional[str] = None
 
-    advanced_settings_on: Optional[bool] = None
-    start_element_number: Optional[str] = "0"
-    delay: Optional[str] = "2"
+    advanced_settings_on: bool = False
+    start_element_number: str = "0"
+    delay: str = "2.0"
 
     def clear(self) -> Self:
         for field in self.__pydantic_fields__:

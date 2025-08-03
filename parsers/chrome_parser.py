@@ -36,7 +36,7 @@ class Chrome:
         self.driver.get(self.user_answers.url)
         self._wait_till_page_loaded()
 
-        element_number = 0
+        element_number = int(self.user_answers.start_element_number)
         try:
             while True:
                 master_page_blocks = self.driver.find_elements(By.CSS_SELECTOR, self.user_answers.master_page_parsed_selector)
@@ -71,7 +71,7 @@ class Chrome:
                 html_files.append(html_content)
                 element_number += 1
         except Exception as e:
-            logger.info(f"Error occurred at {element_number=}, process continued. {e}")
+            logger.warning(f"Error occurred at {element_number=}, process continued. {e}")
 
         return html_files
 
