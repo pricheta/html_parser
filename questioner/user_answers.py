@@ -39,7 +39,7 @@ class UserAnswers(BaseModel):
         return self
 
     @field_validator('url')
-    def __add_ssl_header(cls, v):
+    def __add_ssl_header(self, v):
         if v and not v.startswith(('http://', 'https://')):
             return SSL_HEADER + v
         return
