@@ -48,6 +48,6 @@ class UserAnswers(BaseModel):
 
     @field_validator('start_element_number')
     def __validate_start_element_number(cls, v):
-        if v <= 0:
+        if int(v) <= 0:
             raise ValueError('start_element_number can\'t be less than or equal to 0')
         return v

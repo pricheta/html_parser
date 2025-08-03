@@ -25,14 +25,16 @@ def main() -> None:
 
     parse_result = sorted(parse_result, key=lambda x: len(x))
     result_df: pd.DataFrame = pd.DataFrame(data=parse_result)
-    result_df.to_excel(FILES_DIR + RESULT_FILENAME.format(get_now_utc(MSK_TIMEZONE).strftime(RESULT_FILENAME_DATETIME_PATTERN)))
+    filename = FILES_DIR + RESULT_FILENAME.format(get_now_utc(MSK_TIMEZONE).strftime(RESULT_FILENAME_DATETIME_PATTERN))
+    result_df.to_excel(filename)
+    logger.info(f'Loaded file \'{filename}\'')
 
 
 @contextmanager
 def session(session_id: UUID) -> None:
-    logger.info(f'-------------------- Starting session {session_id} at {get_now_utc_str()} ---------------------')
+    logger.info(f'\n\n\n-------------------- Starting session {session_id} at {get_now_utc_str()} ---------------------')
     yield
-    logger.info(f'---------------------- Ending session {session_id} at {get_now_utc_str()} ---------------------\n\n\n')
+    logger.info(f'---------------------- Ending session {session_id} at {get_now_utc_str()} ---------------------')
 
 
 if __name__ == "__main__":
