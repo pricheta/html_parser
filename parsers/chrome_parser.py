@@ -57,7 +57,11 @@ class Chrome:
             html_content = master_page_blocks[element_number].get_attribute('outerHTML')
 
             if clicked_classes:
-                clicked_block = master_page_blocks[element_number].find_element(By.CLASS_NAME, clicked_classes)
+                if clicked_classes == master_page_parsed_classes:
+                    clicked_block = master_page_blocks[element_number]
+                else:
+                    clicked_block = master_page_blocks[element_number].find_element(By.CLASS_NAME, clicked_classes)
+
                 self.driver.execute_script("arguments[0].click();", clicked_block)
                 self._wait_till_page_loaded()
 
