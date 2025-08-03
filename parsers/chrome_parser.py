@@ -3,6 +3,7 @@ from time import time, sleep
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.common import NoSuchElementException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
@@ -38,39 +39,42 @@ class Chrome:
         self._wait_till_page_loaded()
 
         element_number = 0
-        while True:
-            master_page_blocks = self.driver.find_elements(By.CSS_SELECTOR, self.user_answers.master_page_parsed_selector)
+        try:
+            while True:
+                master_page_blocks = self.driver.find_elements(By.CSS_SELECTOR, self.user_answers.master_page_parsed_selector)
 
-            if element_number >= len(master_page_blocks):
-                if self.user_answers.scroll_required:
-                    diff = self._scroll_to_bottom_with_wait()
-                    if not diff:
-                        break
-                    continue
-                break
+                if element_number >= len(master_page_blocks):
+                    if self.user_answers.scroll_required:
+                        diff = self._scroll_to_bottom_with_wait()
+                        if not diff:
+                            break
+                        continue
+                    break
 
-            current_master_page_block = master_page_blocks[element_number]
-            html_content = current_master_page_block.get_attribute('outerHTML')
+                current_master_page_block = master_page_blocks[element_number]
+                html_content = current_master_page_block.get_attribute('outerHTML')
 
-            if self.user_answers.master_slave_mode != MasterSlaveMode.MASTER_SLAVE_MODE_OFF:
-                if self.user_answers.master_slave_mode == MasterSlaveMode.CLICK_MASTER_TAG:
-                    clicked_block = current_master_page_block
-                elif self.user_answers.master_slave_mode == MasterSlaveMode.CLICK_INNER_TAG:
-                    clicked_block = current_master_page_block.find_element(By.CSS_SELECTOR, self.user_answers.clicked_selector)
-                else:
-                    self.logger.info(f'{self.user_answers.master_slave_mode} mode not supported')
-                    raise
+                if self.user_answers.master_slave_mode != MasterSlaveMode.MASTER_SLAVE_MODE_OFF:
+                    if self.user_answers.master_slave_mode == MasterSlaveMode.CLICK_MASTER_TAG:
+                        clicked_block = current_master_page_block
+                    elif self.user_answers.master_slave_mode == MasterSlaveMode.CLICK_INNER_TAG:
+                        clicked_block = current_master_page_block.find_element(By.CSS_SELECTOR, self.user_answers.clicked_selector)
+                    else:
+                        self.logger.info(f'{self.user_answers.master_slave_mode} mode not supported')
+                        raise
 
-                self.driver.execute_script("arguments[0].click();", clicked_block)
-                self._wait_till_page_loaded()
+                    self.driver.execute_script("arguments[0].click();", clicked_block)
+                    self._wait_till_page_loaded()
 
-                slave_block = self.driver.find_element(By.CSS_SELECTOR, self.user_answers.slave_page_parsed_selector)
-                html_content += slave_block.get_attribute('outerHTML')
-                self.driver.back()
-                self._wait_till_page_loaded()
+                    slave_block = self.driver.find_element(By.CSS_SELECTOR, self.user_answers.slave_page_parsed_selector)
+                    html_content += slave_block.get_attribute('outerHTML')
+                    self.driver.back()
+                    self._wait_till_page_loaded()
 
-            html_files.append(html_content)
-            element_number += 1
+                html_files.append(html_content)
+                element_number += 1
+        except Exception as e:
+            self.logger.info(f"Error occurred at {element_number=}, process continued. {e}")
 
         return html_files
 
