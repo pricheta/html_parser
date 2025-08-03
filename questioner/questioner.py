@@ -3,7 +3,7 @@ import questionary
 from common.constants import SSL_HEADER
 from common.utils import clear_screen
 from logger.logger import logger, log_calling
-from questioner.user_answers import UserAnswers, AppMode
+from questioner.user_answers import UserAnswers, AppMode, MasterSlaveMode
 
 
 class Questioner:
@@ -18,7 +18,7 @@ class Questioner:
         self._ask_user(
             app_mode=questionary.select(
                 "Режим работы приложения",
-                [AppMode.FROM_URL, AppMode.FROM_FILE, ],
+                [mode for mode in AppMode],
                 instruction=' ',
             ),
         )
@@ -41,25 +41,23 @@ class Questioner:
 
     def _ask_about_url_mode(self):
         self._ask_user(
+            master_slave_mode=questionary.select("Режим переходов на второстепенные страницы", [mode for mode in MasterSlaveMode]),
             scroll_required=questionary.confirm("Нужно ли будет скроллить вниз основную страницу?"),
-            get_to_slave_page=questionary.confirm("Нужно ли будет переходить на вторичные страницы?"),
             url=questionary.text('Ссылка на основную страницу для парсинга:', validate=bool),
-            master_page_parsed_classes=questionary.text("Введи классы элементов для парсинга на основной странице:",
-                                                        validate=bool),
+            master_page_parsed_classes=questionary.text("Введи классы элементов для парсинга на основной странице:", validate=bool),
         )
-        if self.user_answers.get_to_slave_page:
+        if self.user_answers.master_slave_mode == MasterSlaveMode.CLICK_INNER_TAG:
             self._ask_user(
                 clicked_classes=questionary.text(
-                    "Введи классы элементов, на которые нужно нажать для перехода на вторичные страницы:",
-                    validate=bool),
-                slave_page_parsed_classes=questionary.text(
-                    "Введи классы элементов для парсинга на вторичных страницах:", validate=bool),
+                    "Введи классы элементов, на которые нужно нажать для перехода на вторичные страницы:", validate=bool),
+            )
+        if self.user_answers.master_slave_mode in (MasterSlaveMode.CLICK_MASTER_TAG, MasterSlaveMode.CLICK_INNER_TAG):
+            self._ask_user(
+                slave_page_parsed_classes=questionary.text("Введи классы элементов для парсинга на вторичных страницах:", validate=bool),
             )
         self._ask_user(
             delay=questionary.text("Введи задержку между действиями:", validate=bool),
         )
-        if SSL_HEADER not in self.user_answers.url:
-            self.user_answers.url = SSL_HEADER + self.user_answers.url
 
     def _ask_about_file_mode(self):
         self._ask_user(

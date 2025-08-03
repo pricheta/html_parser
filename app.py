@@ -21,16 +21,7 @@ def main() -> None:
     else:
         parser = FileParser(user_answers)
 
-    # user_answers = UserAnswers(
-    #     app_mode=AppMode.FROM_URL,
-    #     get_to_slave_page=True,
-    #     scroll_required=True,
-    #     url='https://gkvostok2.ru/search?price=5.04494&price=43.74&floor=2&floor=17&square=24.49&square=108&ordering=price&pagination[page]=1&pagination[pageSize]=1000',
-    #     master_page_parsed_classes='flat-card',
-    #     clicked_classes='flat-card__header',
-    #     slave_page_parsed_classes='floor-card',
-    # )
-    parse_result = ChromeParser(user_answers).parse()
+    parse_result = parser.parse()
 
     parse_result = sorted(parse_result, key=lambda x: len(x))
     result_df: pd.DataFrame = pd.DataFrame(data=parse_result)
@@ -49,3 +40,17 @@ if __name__ == "__main__":
 
     with session(session_id=session_id):
         main()
+
+
+
+
+
+    # user_answers = UserAnswers(
+    #     app_mode=AppMode.FROM_URL,
+    #     get_to_slave_page=True,
+    #     scroll_required=True,
+    #     url='https://gkvostok2.ru/search?price=5.04494&price=43.74&floor=2&floor=17&square=24.49&square=108&ordering=price&pagination[page]=1&pagination[pageSize]=1000',
+    #     master_page_parsed_classes='flat-card',
+    #     clicked_classes='flat-card__header',
+    #     slave_page_parsed_classes='floor-card',
+    # )
