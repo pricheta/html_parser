@@ -98,17 +98,20 @@ class Chrome:
             'session_storage': self.driver.execute_script("return JSON.stringify(sessionStorage);")
         }
 
+        safe_html = state['html'].replace('\\', '\\\\').replace('`', '\\`').replace('$', '\\$')
+
         self.driver.switch_to.new_window('tab')
 
-        self.driver.execute_script(f"""
-            document.open();
-            document.write(`{state['html']}`);
-            document.close();
-            window.scrollTo({state['scroll'][0]}, {state['scroll'][1]});
-            history.replaceState(null, null, `{state['url']}`);
+        self.driver.execute_script("document.open();")
+        self.driver.execute_script(f"document.write(`{safe_html}`);")
+        self.driver.execute_script("document.close();")
 
-            const localStorageData = {state['local_storage']};
-            const sessionStorageData = {state['session_storage']};
+        self.driver.execute_script(f"window.scrollTo({state['scroll'][0]}, {state['scroll'][1]});")
+        self.driver.execute_script(f"history.replaceState(null, null, `{state['url']}`);")
+
+        self.driver.execute_script(f"""
+            const localStorageData = JSON.parse(`{state['local_storage']}`);
+            const sessionStorageData = JSON.parse(`{state['session_storage']}`);
 
             for (const key in localStorageData) {{
                 localStorage.setItem(key, localStorageData[key]);
@@ -120,7 +123,10 @@ class Chrome:
         """)
 
         for cookie in state['cookies']:
-            self.driver.add_cookie(cookie)
+            try:
+                self.driver.add_cookie(cookie)
+            except:
+                continue
 
         return self.driver.current_window_handle
 
