@@ -24,26 +24,9 @@ class Questioner:
         )
 
         if self.user_answers.app_mode == AppMode.FROM_URL:
-            self._ask_user(
-                scroll_required=questionary.confirm("Нужно ли будет скроллить вниз основную страницу?"),
-                get_to_slave_page=questionary.confirm("Нужно ли будет переходить на вторичные страницы?"),
-                url=questionary.text('Ссылка на основную страницу для парсинга:', validate=bool),
-                master_page_parsed_classes=questionary.text("Введи классы элементов для парсинга на основной странице:", validate=bool),
-            )
-            if self.user_answers.get_to_slave_page:
-                self._ask_user(
-                    clicked_classes=questionary.text("Введи классы элементов, на которые нужно нажать для перехода на вторичные страницу:", validate=bool),
-                    slave_page_parsed_classes=questionary.text("Введи классы элементов для парсинга на вторичных страницах:", validate=bool),
-                )
-            self._ask_user(
-                delay=questionary.text("Введи задержку между действиями:", validate=bool),
-            )
-            if SSL_HEADER not in self.user_answers.url:
-                self.user_answers.url = SSL_HEADER + self.user_answers.url
+            self._ask_about_url_mode()
         else:
-            self._ask_user(
-                master_page_parsed_classes=questionary.text("Введи классы элементов для парсинга на странице:", validate=bool),
-            )
+            self._ask_about_file_mode()
 
         self._log_answers()
         return self.user_answers
@@ -56,5 +39,31 @@ class Questioner:
     def _log_answers(self) -> None:
         self.logger.info(f'User answered - {self.user_answers.model_dump(exclude_none=True)}')
 
+    def _ask_about_url_mode(self):
+        self._ask_user(
+            scroll_required=questionary.confirm("Нужно ли будет скроллить вниз основную страницу?"),
+            get_to_slave_page=questionary.confirm("Нужно ли будет переходить на вторичные страницы?"),
+            url=questionary.text('Ссылка на основную страницу для парсинга:', validate=bool),
+            master_page_parsed_classes=questionary.text("Введи классы элементов для парсинга на основной странице:",
+                                                        validate=bool),
+        )
+        if self.user_answers.get_to_slave_page:
+            self._ask_user(
+                clicked_classes=questionary.text(
+                    "Введи классы элементов, на которые нужно нажать для перехода на вторичные страницы:",
+                    validate=bool),
+                slave_page_parsed_classes=questionary.text(
+                    "Введи классы элементов для парсинга на вторичных страницах:", validate=bool),
+            )
+        self._ask_user(
+            delay=questionary.text("Введи задержку между действиями:", validate=bool),
+        )
+        if SSL_HEADER not in self.user_answers.url:
+            self.user_answers.url = SSL_HEADER + self.user_answers.url
+
+    def _ask_about_file_mode(self):
+        self._ask_user(
+            master_page_parsed_classes=questionary.text("Введи классы элементов для парсинга на странице:", validate=bool),
+        )
 
 questioner = Questioner()
