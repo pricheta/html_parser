@@ -1,6 +1,5 @@
 import questionary
 
-from common.constants import SSL_HEADER
 from common.utils import clear_screen
 from logger.logger import logger, log_calling
 from questioner.user_answers import UserAnswers, AppMode, MasterSlaveMode
