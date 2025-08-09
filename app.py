@@ -5,7 +5,7 @@ from uuid import UUID
 import pandas as pd
 
 from common.constants import FILES_DIR, RESULT_FILENAME, RESULT_FILENAME_DATETIME_PATTERN, MSK_TIMEZONE
-from common.utils import get_now_utc_str, get_now_utc
+from common.utils import get_now_utc_str, get_now
 from logger.logger import logger, control_log_file
 from parsers.chrome_parser import ChromeParser
 from parsers.file_parser import FileParser
@@ -25,7 +25,7 @@ def main() -> None:
 
     parse_result = sorted(parse_result, key=lambda x: len(x))
     result_df: pd.DataFrame = pd.DataFrame(data=parse_result)
-    filename = FILES_DIR + RESULT_FILENAME.format(get_now_utc(MSK_TIMEZONE).strftime(RESULT_FILENAME_DATETIME_PATTERN))
+    filename = FILES_DIR + RESULT_FILENAME.format(get_now(MSK_TIMEZONE).strftime(RESULT_FILENAME_DATETIME_PATTERN))
     result_df.to_excel(filename)
     logger.info(f'Loaded file \'{filename}\'')
 
