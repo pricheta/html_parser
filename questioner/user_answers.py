@@ -4,7 +4,6 @@ from typing import Optional, Self
 from pydantic import BaseModel, field_validator, ConfigDict
 
 from common.constants import SSL_HEADER
-from logger.logger import logger
 
 
 class AppMode(StrEnum):
