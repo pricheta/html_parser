@@ -11,9 +11,9 @@ def clear_screen() -> None:
     os.system(command)
 
 
-def get_now_utc(tz: timezone = UTC) -> datetime:
+def get_now(tz: timezone = UTC) -> datetime:
     return datetime.now(tz)
 
 
 def get_now_utc_str() -> str:
-    return get_now_utc().strftime(DATETIME_PATTERN)
+    return get_now(UTC).strftime(DATETIME_PATTERN)
