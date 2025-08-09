@@ -28,7 +28,7 @@ def main() -> None:
     result_df: pd.DataFrame = pd.DataFrame(data=parse_result)
     filename = FILES_DIR + RESULT_FILENAME.format(get_now(MSK_TIMEZONE).strftime(RESULT_FILENAME_DATETIME_PATTERN))
     result_df.to_excel(filename)
-    logger.info(f'Loaded file \'{filename}\'')
+    logger.info(f'Выгрузка файла \'{filename}\'')
 
 
 @contextmanager
