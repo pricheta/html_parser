@@ -33,14 +33,17 @@ class Chrome:
     def collect_html_content(self,) -> list[str]:
         html_files = []
 
+        element_number = int(self.user_answers.start_element_number)
+
         self.driver.get(self.user_answers.url)
         self._wait_till_page_loaded()
-
-        element_number = int(self.user_answers.start_element_number)
 
         while True:
             try:
                 master_page_blocks = self.driver.find_elements(By.CSS_SELECTOR, self.user_answers.master_page_parsed_selector)
+                if not master_page_blocks:
+                    logger.error('Не удалось найти элементы для парсинга на основной странице')
+                    break
 
                 if element_number >= len(master_page_blocks):
                     if self.user_answers.scroll_required:
@@ -70,11 +73,13 @@ class Chrome:
                     self._wait_till_page_loaded()
 
                 html_files.append(html_content)
+
             except Exception as e:
                 logger.warning(f"{e.__class__.__name__} occurred at {element_number=}, process continued")
+
             element_number += 1
 
-        logger.info(f'Finished collecting html content, total count = {element_number}')
+        logger.info(f'Finished collecting html content')
         return html_files
 
     def _wait_till_page_loaded(self):
