@@ -11,7 +11,7 @@ from logger.logger import logger, control_log_file
 from parsers.chrome_parser import ChromeParser
 from parsers.file_parser import FileParser
 from questioner.questioner import questioner
-from questioner.user_answers import AppMode, UserAnswers
+from questioner.user_answers import AppMode
 
 
 def main() -> None:
@@ -33,7 +33,7 @@ def main() -> None:
 
 @contextmanager
 def session(session_id: UUID) -> None:
-    logger.info(f'\n----------------------- Старт сессии {session_id} в {get_now_utc_str()} -----------------------')
+    logger.info(f'\n\n\n----------------------- Старт сессии {session_id} в {get_now_utc_str()} -----------------------')
     yield
     logger.info(f'----------------------- Конец сессии {session_id} в {get_now_utc_str()} -----------------------')
 
