@@ -33,9 +33,9 @@ def main() -> None:
 
 @contextmanager
 def session(session_id: UUID) -> None:
-    logger.info(f'\n--------------------- Старт сессии {session_id} в {get_now_utc_str()} ---------------------')
+    logger.info(f'\n----------------------- Старт сессии {session_id} в {get_now_utc_str()} -----------------------')
     yield
-    logger.info(f'-------------------- Конец сессии {session_id} в {get_now_utc_str()} ---------------------')
+    logger.info(f'----------------------- Конец сессии {session_id} в {get_now_utc_str()} -----------------------')
 
 
 if __name__ == "__main__":
@@ -46,7 +46,7 @@ if __name__ == "__main__":
             main()
         except Exception as e:
             logger.error(
-                f"\n\n\n\nВ работе приложения возникла ошибка {e.__class__.__name__}"
+                f"В работе приложения возникла ошибка {e.__class__.__name__}\n"
                 f'Traceback: {traceback.format_exc()}'
             )
 
