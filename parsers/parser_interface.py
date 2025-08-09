@@ -14,4 +14,4 @@ class  Parser(ABC):
 
     @classmethod
     def _log_parse_result(cls, parse_result: list[list[str]]):
-        logger.info(f'Parsed result - {parse_result}')
+        logger.info(f'Результат работы парсера: {parse_result}')

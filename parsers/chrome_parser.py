@@ -62,7 +62,7 @@ class Chrome:
                     elif self.user_answers.master_slave_mode == MasterSlaveMode.CLICK_INNER_TAG:
                         clicked_block = current_master_page_block.find_element(By.CSS_SELECTOR, self.user_answers.clicked_selector)
                     else:
-                        raise ValueError(f'{self.user_answers.master_slave_mode} mode not supported')
+                        raise ValueError(f'Режим работы {self.user_answers.master_slave_mode} не поддерживается')
 
                     self.driver.execute_script("arguments[0].click();", clicked_block)
                     self._wait_till_page_loaded()
@@ -75,11 +75,13 @@ class Chrome:
                 html_files.append(html_content)
 
             except Exception as e:
-                logger.warning(f"{e.__class__.__name__} occurred at {element_number=}, process continued")
+                logger.warning(
+                    f"Ошибка {e.__class__.__name__} возникла при работе с элементом №{element_number}, элемент пропущен"
+                )
 
             element_number += 1
 
-        logger.info(f'Finished collecting html content')
+        logger.info(f'Закончена выгрузка HTML-данных')
         return html_files
 
     def _wait_till_page_loaded(self):

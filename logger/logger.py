@@ -18,7 +18,7 @@ logger.setLevel(logging.INFO)
 
 def log_calling(func: Callable):
     def wrapper(*args, **kwargs):
-        logger.info(f"Calling {func.__qualname__} with {args=}, {kwargs=}")
+        logger.info(f"Вызов {func.__qualname__} с {args=}, {kwargs=}")
         return func(*args, **kwargs)
     return wrapper
 

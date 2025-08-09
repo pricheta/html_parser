@@ -34,7 +34,7 @@ class Questioner:
             setattr(self.user_answers, param, answer)
 
     def _log_answers(self) -> None:
-        logger.info(f'User answered - {self.user_answers.model_dump(exclude_none=True)}')
+        logger.info(f'Ответы пользователя: {self.user_answers.model_dump(exclude_none=True)}')
 
     def _ask_about_url_mode(self):
         self._ask_user(master_slave_mode=questionary.select("Режим переходов на второстепенные страницы", [mode for mode in MasterSlaveMode], instruction=' '))
