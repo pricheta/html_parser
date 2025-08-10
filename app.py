@@ -55,5 +55,5 @@ if __name__ == "__main__":
             f'Traceback: {traceback.format_exc()}'
         )
 
-    logger.info(f'Конец сессии {session_id}\n\n\n')
     control_log_file()
+    logger.info(f'Конец сессии {session_id}\n\n\n')
