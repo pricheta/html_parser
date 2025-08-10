@@ -23,34 +23,31 @@ class Chrome:
     @log_calling
     def __init__(self, user_answers: UserAnswers):
         self.user_answers = user_answers
-        self.master_driver: webdriver.Chrome | None = None
-        self.slave_driver: webdriver.Chrome | None = None
+        self.driver: webdriver.Chrome | None = None
 
     @log_calling
     def __enter__(self):
         options = Options()
         options.add_argument("--log-level=3")
         options.add_experimental_option("excludeSwitches", ["enable-logging"])
-        self.master_driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-        self.slave_driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-        return self.master_driver
+        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+        return self.driver
 
     @log_calling
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.master_driver.quit()
-        self.slave_driver.quit()
+        self.driver.quit()
         return False
 
     @log_calling
     def collect_html_content(self,) -> list[str]:
         html_files = []
 
-        self.master_driver.get(self.user_answers.url)
+        self.driver.get(self.user_answers.url)
         if self.user_answers.scroll_required:
-            self._scroll_to_bottom(self.master_driver)
-        self._wait_till_page_loaded(self.master_driver)
+            self._scroll_to_bottom(self.driver)
+        self._wait_till_page_loaded(self.driver)
 
-        master_page_blocks = self.master_driver.find_elements(By.CSS_SELECTOR, self.user_answers.master_page_parsed_selector)
+        master_page_blocks = self.driver.find_elements(By.CSS_SELECTOR, self.user_answers.master_page_parsed_selector)
         if not master_page_blocks:
             raise NoSuchElementException('Не удалось найти элементы для парсинга на основной странице')
 
@@ -61,10 +58,10 @@ class Chrome:
                 clicked_block = self._get_clicked_block(master_page_block)
                 slave_block_url = self._get_clicked_block_url(clicked_block)
 
-                self.slave_driver.get(slave_block_url)
-                self._wait_till_page_loaded(self.slave_driver)
+                self.driver.get(slave_block_url)
+                self._wait_till_page_loaded()
 
-                slave_block = self.slave_driver.find_element(By.CSS_SELECTOR, self.user_answers.slave_page_parsed_selector)
+                slave_block = self.driver.find_element(By.CSS_SELECTOR, self.user_answers.slave_page_parsed_selector)
                 html_content += slave_block.get_attribute('outerHTML')
 
 
@@ -74,7 +71,7 @@ class Chrome:
         return html_files
 
     @log_calling
-    def _wait_till_page_loaded(self, driver: webdriver.Chrome):
+    def _wait_till_page_loaded(self):
         check_interval = 0.1
         current_count = None
         stable_count = 0
@@ -85,7 +82,7 @@ class Chrome:
         while time() - start_time < 5 and stable_count < 4:
             last_count = current_count
             current_count = len(
-                driver.find_elements(By.CSS_SELECTOR, "body, div, p, a, span, img")
+                self.driver.find_elements(By.CSS_SELECTOR, "body, div, p, a, span, img")
             )
             if not current_count:
                 sleep(check_interval)
@@ -101,15 +98,15 @@ class Chrome:
         logger.debug(f'Ожидание загрузки страницы окончено спустя {time() - start_time} секунд')
 
     @log_calling
-    def _scroll_to_bottom(self, driver: webdriver.Chrome):
-        current_height = driver.execute_script("return document.body.scrollHeight")
+    def _scroll_to_bottom(self):
+        current_height = self.driver.execute_script("return document.body.scrollHeight")
         stable_count = 0
 
         while stable_count < 2:
             previous_height = current_height
-            driver.execute_script(f"window.scrollTo(0, {current_height});")
+            self.driver.execute_script(f"window.scrollTo(0, {current_height});")
             sleep(0.1)
-            current_height = driver.execute_script("return document.body.scrollHeight")
+            current_height = self.driver.execute_script("return document.body.scrollHeight")
 
             if current_height <= previous_height:
                 stable_count += 1
@@ -128,14 +125,14 @@ class Chrome:
 
     @log_calling
     def _get_clicked_block_url(self, clicked_block: WebElement) -> str:
-        current_url = self.master_driver.current_url
-        self.master_driver.execute_script('arguments[0].click()', clicked_block)
+        current_url = self.driver.current_url
+        self.driver.execute_script('arguments[0].click()', clicked_block)
 
-        while current_url == self.master_driver.current_url:
+        while current_url == self.driver.current_url:
             sleep(0.1)
 
-        url = self.master_driver.current_url
-        self.master_driver.back()
+        url = self.driver.current_url
+        self.driver.back()
         return url
 
 
