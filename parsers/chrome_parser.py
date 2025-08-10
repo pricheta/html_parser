@@ -35,11 +35,11 @@ class Chrome:
 
         element_number = int(self.user_answers.start_element_number)
 
+        self.driver.get(self.user_answers.url)
+        self._wait_till_page_loaded()
+
         while True:
             try:
-                self.driver.get(self.user_answers.url)
-                self._wait_till_page_loaded()
-
                 master_page_blocks = self.driver.find_elements(By.CSS_SELECTOR, self.user_answers.master_page_parsed_selector)
                 if not master_page_blocks:
                     logger.error('Не удалось найти элементы для парсинга на основной странице, экстренное завершение')
@@ -69,6 +69,9 @@ class Chrome:
 
                     slave_block = self.driver.find_element(By.CSS_SELECTOR, self.user_answers.slave_page_parsed_selector)
                     html_content += slave_block.get_attribute('outerHTML')
+
+                    self.driver.get(self.user_answers.url)
+                    self._wait_till_page_loaded()
 
                 html_files.append(html_content)
 

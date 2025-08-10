@@ -11,17 +11,27 @@ from logger.logger import logger, control_log_file
 from parsers.chrome_parser import ChromeParser
 from parsers.file_parser import FileParser
 from questioner.questioner import questioner
-from questioner.user_answers import AppMode
+from questioner.user_answers import AppMode, UserAnswers, MasterSlaveMode
 
 
 def main() -> None:
-    user_answers = questioner.question_user()
+    # user_answers = questioner.question_user()
+    #
+    # if user_answers.app_mode == AppMode.FROM_URL:
+    #     parser = ChromeParser(user_answers)
+    # else:
+    #     parser = FileParser(user_answers)
 
-    if user_answers.app_mode == AppMode.FROM_URL:
-        parser = ChromeParser(user_answers)
-    else:
-        parser = FileParser(user_answers)
-
+    user_answers = UserAnswers(
+        app_mode=AppMode.FROM_URL,
+        master_slave_mode=MasterSlaveMode.CLICK_MASTER_TAG,
+        scroll_required=True,
+        url='https://gkvostok2.ru/search?price=5.04494&price=43.74&floor=2&floor=17&square=24.49&square=108&ordering=price&pagination[page]=1&pagination[pageSize]=10',
+        master_page_parsed_selector='div.flat-card',
+        slave_page_parsed_selector='div.floor-card',
+        advanced_settings_on=False,
+    )
+    parser = ChromeParser(user_answers)
     parse_result = parser.parse()
 
     parse_result = sorted(parse_result, key=lambda x: len(x))
