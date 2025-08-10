@@ -5,7 +5,8 @@ from uuid import UUID
 
 import pandas as pd
 
-from common.constants import FILES_DIR, RESULT_FILENAME, MSK_TIMEZONE, DATETIME_PATTERN
+from common.constants import FILES_DIR, RESULT_FILENAME, MSK_TIMEZONE, DATETIME_PATTERN, \
+    RESULT_FILENAME_DATETIME_PATTERN
 from common.utils import get_now_utc_str, get_now
 from logger.logger import logger, control_log_file
 from parsers.chrome_parser import ChromeParser
@@ -36,7 +37,7 @@ def main() -> None:
 
     parse_result = sorted(parse_result, key=lambda x: len(x))
     result_df: pd.DataFrame = pd.DataFrame(data=parse_result)
-    filename = FILES_DIR + RESULT_FILENAME.format(get_now(MSK_TIMEZONE).strftime(DATETIME_PATTERN))
+    filename = FILES_DIR + RESULT_FILENAME.format(get_now(MSK_TIMEZONE).strftime(RESULT_FILENAME_DATETIME_PATTERN))
     result_df.to_excel(filename)
     logger.info(f'Выгрузка файла \'{filename}\'')
 
@@ -49,7 +50,7 @@ if __name__ == "__main__":
         main()
     except Exception as e:
         logger.error(
-            f"В работе приложения возникла ошибка {e.__class__.__name__}\n"
+            f"\nВ работе приложения возникла ошибка {e.__class__.__name__}\n"
             f'Traceback: {traceback.format_exc()}'
         )
 
