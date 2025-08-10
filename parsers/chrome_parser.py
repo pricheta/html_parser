@@ -1,11 +1,13 @@
 from time import sleep, time
 
 from bs4 import BeautifulSoup
+from func_timeout import func_timeout, FunctionTimedOut
 from selenium import webdriver
 from selenium.common import WebDriverException, TimeoutException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
@@ -69,12 +71,14 @@ class Chrome:
                     else:
                         raise ValueError(f'Режим работы {self.user_answers.master_slave_mode} не поддерживается')
 
+                    current_page_url = self.driver.current_url
                     self.driver.execute_script("arguments[0].click();", clicked_block)
                     self._wait_till_page_loaded()
 
                     slave_block = self.driver.find_element(By.CSS_SELECTOR, self.user_answers.slave_page_parsed_selector)
                     html_content += slave_block.get_attribute('outerHTML')
 
+                    current_page_url = self.driver.current_url
                     self.driver.get(self.user_answers.url)
                     self._wait_till_page_loaded()
 
@@ -93,41 +97,33 @@ class Chrome:
 
     @log_calling
     def _wait_till_page_loaded(self):
-        start = time()
-        WebDriverWait(self.driver, 10).until(
-            lambda d: d.execute_script("return document.readyState") == "complete"
-        )
-        logger.info(f'Первая проверка окончена спустя {time() - start} секунд')
-
-        try:
-            WebDriverWait(self.driver, 10).until(
-                lambda d: d.execute_script("return (typeof jQuery === 'undefined') || jQuery.active === 0")
-            )
-        except:
-            logger.info(f'Вторая проверка сломана спустя {time() - start} секунд')
-        logger.info(f'Вторая проверка окончена спустя {time() - start} секунд')
-
-        self._wait_till_dom_stable()
-        logger.info(f'Третья проверка окончена спустя {time() - start} секунд')
-
-    @log_calling
-    def _wait_till_dom_stable(self, check_interval=0.1):
-        start_time = time()
-        last_count = 0
+        check_interval = 0.1
+        current_count = None
         stable_count = 0
 
-        while time() - start_time < float(2):
-            current_count = self.driver.execute_script("return document.getElementsByTagName('*').length")
-            logger.debug(f'{current_count=}')
+        start_time = time()
+        sleep(1)
+
+        while time() - start_time < 5:
+            last_count = current_count
+            current_count = len(
+                self.driver.find_elements(By.CSS_SELECTOR, "body, div, p, a, span, img")
+            )
+            if not current_count:
+                sleep(check_interval)
+                continue
+
             if current_count == last_count:
                 stable_count += 1
-                if stable_count >= 3:
-                    return
             else:
                 stable_count = 0
-                last_count = current_count
 
+            logger.debug(f'Проверка условий, {current_count=}, {last_count=}, {stable_count=}')
+            if stable_count >= 4:
+                break
             sleep(check_interval)
+
+        logger.debug(f'Ожидание загрузки страницы окончено спустя {time() - start_time} секунд')
 
     @log_calling
     def _scroll_to_bottom_with_wait(self):
@@ -136,7 +132,6 @@ class Chrome:
         self._wait_till_page_loaded()
         current_height = self.driver.execute_script("return document.body.scrollHeight")
         return current_height - previous_height
-
 
 
 class ChromeParser(Parser):

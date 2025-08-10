@@ -50,11 +50,11 @@ if __name__ == "__main__":
 
     try:
         main()
+        control_log_file()
     except Exception as e:
         logger.error(
             f"В работе приложения возникла ошибка {e.__class__.__name__}\n"
             f'Traceback: {traceback.format_exc()}'
         )
 
-    control_log_file()
     logger.info(f'Конец сессии {session_id}\n\n\n\n\n')
