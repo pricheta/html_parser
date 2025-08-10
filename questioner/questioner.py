@@ -1,7 +1,7 @@
 import questionary
 
 from common.utils import clear_screen
-from logger.logger import logger, log_calling
+from logger.logger import log_calling
 from questioner.user_answers import UserAnswers, AppMode, MasterSlaveMode
 
 
@@ -13,7 +13,6 @@ class Questioner:
     def question_user(self) -> UserAnswers:
         clear_screen()
 
-        logger.debug('Запуск опросника')
         self._ask_user(app_mode=questionary.select("Режим работы приложения", [mode for mode in AppMode], instruction=' '))
 
         if self.user_answers.app_mode == AppMode.FROM_URL:
@@ -26,17 +25,12 @@ class Questioner:
             self._ask_user(start_element_number=questionary.text("Введи номер начального элемента:", validate=bool))
             self._ask_user(delay=questionary.text("Введи задержку между действиями:", validate=bool))
 
-        logger.debug('Конец опросника')
-        self._log_answers()
         return self.user_answers
 
     def _ask_user(self, **kwargs) -> None:
         answers_dict = questionary.form(**kwargs).ask()
         for param, answer in answers_dict.items():
             setattr(self.user_answers, param, answer)
-
-    def _log_answers(self) -> None:
-        logger.info(f'Ответы пользователя: {self.user_answers.model_dump(exclude_none=True)}')
 
     def _ask_about_url_mode(self):
         self._ask_user(master_slave_mode=questionary.select("Режим переходов на второстепенные страницы", [mode for mode in MasterSlaveMode], instruction=' '))
