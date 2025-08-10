@@ -51,4 +51,3 @@ class Questioner:
     def _ask_about_file_mode(self):
         self._ask_user(master_page_parsed_selector=questionary.text("Введи селектор элементов для парсинга на странице:", validate=bool))
 
-questioner = Questioner()

@@ -118,7 +118,7 @@ class Chrome:
 
         while time() - start_time < float(2):
             current_count = self.driver.execute_script("return document.getElementsByTagName('*').length")
-            logger.info(f'{current_count=}')
+            logger.debug(f'{current_count=}')
             if current_count == last_count:
                 stable_count += 1
                 if stable_count >= 3:

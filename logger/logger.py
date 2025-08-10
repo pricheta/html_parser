@@ -23,7 +23,7 @@ def log_calling(func: Callable):
     def wrapper(*args, **kwargs):
         logger.debug(f"Вызов {func.__qualname__} с {args=}, {kwargs=}")
         result = func(*args, **kwargs)
-        logger.debug(f"Вызов окончен, {result=}")
+        logger.debug(f"Выход из {func.__qualname__}, {result=}")
         return result
     return wrapper
 

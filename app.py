@@ -11,12 +11,13 @@ from common.utils import get_now_utc_str, get_now
 from logger.logger import logger, control_log_file, log_calling
 from parsers.chrome_parser import ChromeParser
 from parsers.file_parser import FileParser
-from questioner.questioner import questioner
+from questioner.questioner import Questioner
 from questioner.user_answers import AppMode, UserAnswers, MasterSlaveMode
 
 
 @log_calling
 def main() -> None:
+    # questioner = Questioner()
     # user_answers = questioner.question_user()
     #
     # if user_answers.app_mode == AppMode.FROM_URL:
@@ -51,9 +52,9 @@ if __name__ == "__main__":
         main()
     except Exception as e:
         logger.error(
-            f"\nВ работе приложения возникла ошибка {e.__class__.__name__}\n"
+            f"В работе приложения возникла ошибка {e.__class__.__name__}\n"
             f'Traceback: {traceback.format_exc()}'
         )
 
     control_log_file()
-    logger.info(f'Конец сессии {session_id}\n\n\n')
+    logger.info(f'Конец сессии {session_id}\n\n\n\n\n')
