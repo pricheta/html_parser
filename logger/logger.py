@@ -27,7 +27,7 @@ def log_calling(func: Callable):
         return result
     return wrapper
 
-
+@log_calling
 def control_log_file():
     file_size = os.path.getsize(LOG_FILENAME)
     if file_size <= LOG_FILE_MAX_SIZE_BYTES:

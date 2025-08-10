@@ -8,13 +8,14 @@ import pandas as pd
 from common.constants import FILES_DIR, RESULT_FILENAME, MSK_TIMEZONE, DATETIME_PATTERN, \
     RESULT_FILENAME_DATETIME_PATTERN
 from common.utils import get_now_utc_str, get_now
-from logger.logger import logger, control_log_file
+from logger.logger import logger, control_log_file, log_calling
 from parsers.chrome_parser import ChromeParser
 from parsers.file_parser import FileParser
 from questioner.questioner import questioner
 from questioner.user_answers import AppMode, UserAnswers, MasterSlaveMode
 
 
+@log_calling
 def main() -> None:
     # user_answers = questioner.question_user()
     #

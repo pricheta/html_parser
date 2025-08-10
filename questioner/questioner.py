@@ -6,6 +6,7 @@ from questioner.user_answers import UserAnswers, AppMode, MasterSlaveMode
 
 
 class Questioner:
+    @log_calling
     def __init__(self):
         self.user_answers = UserAnswers()
 
@@ -27,11 +28,13 @@ class Questioner:
 
         return self.user_answers
 
+    @log_calling
     def _ask_user(self, **kwargs) -> None:
         answers_dict = questionary.form(**kwargs).ask()
         for param, answer in answers_dict.items():
             setattr(self.user_answers, param, answer)
 
+    @log_calling
     def _ask_about_url_mode(self):
         self._ask_user(master_slave_mode=questionary.select("Режим переходов на второстепенные страницы", [mode for mode in MasterSlaveMode], instruction=' '))
         self._ask_user(scroll_required=questionary.confirm("Нужно ли будет скроллить вниз основную страницу?"))
@@ -44,6 +47,7 @@ class Questioner:
         if self.user_answers.master_slave_mode in (MasterSlaveMode.CLICK_MASTER_TAG, MasterSlaveMode.CLICK_INNER_TAG):
             self._ask_user(slave_page_parsed_selector=questionary.text("Введи селектор элементов для парсинга на вторичных страницах:", validate=bool))
 
+    @log_calling
     def _ask_about_file_mode(self):
         self._ask_user(master_page_parsed_selector=questionary.text("Введи селектор элементов для парсинга на странице:", validate=bool))
 
