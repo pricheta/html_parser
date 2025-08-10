@@ -42,14 +42,12 @@ class UserAnswers(BaseModel):
         return self
 
     @field_validator('url')
-    @log_calling
     def __add_ssl_header(cls, v):
         if v and not v.startswith(('http://', 'https://')):
             return SSL_HEADER + v
         return v
 
     @field_validator('start_element_number')
-    @log_calling
     def __validate_start_element_number(cls, v):
         if int(v) < 0:
             raise ValueError('start_element_number can\'t be less than 0')
