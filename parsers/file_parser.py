@@ -12,5 +12,4 @@ class FileParser(Parser):
             bs = BeautifulSoup(file, features="html.parser")
 
         parse_result = [bs.find_all(class_=[self.user_answers.master_page_parsed_selector, ]), ]
-        self._log_parse_result(parse_result)
         return parse_result

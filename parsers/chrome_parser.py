@@ -1,11 +1,13 @@
-from time import sleep
-
+from time import sleep, time
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.common import WebDriverException, TimeoutException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.wait import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
 from logger.logger import log_calling, logger
@@ -14,10 +16,12 @@ from questioner.user_answers import UserAnswers, MasterSlaveMode
 
 
 class Chrome:
+    @log_calling
     def __init__(self, user_answers: UserAnswers):
         self.user_answers = user_answers
         self.driver: webdriver.Chrome | None = None
 
+    @log_calling
     def __enter__(self):
         options = Options()
         options.add_argument("--log-level=3")
@@ -25,6 +29,7 @@ class Chrome:
         self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
         return self.driver
 
+    @log_calling
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.driver.quit()
         return False
@@ -86,9 +91,45 @@ class Chrome:
         logger.info(f'Закончена выгрузка HTML-данных')
         return html_files
 
+    @log_calling
     def _wait_till_page_loaded(self):
-        sleep(float(self.user_answers.delay))
+        start = time()
+        WebDriverWait(self.driver, 10).until(
+            lambda d: d.execute_script("return document.readyState") == "complete"
+        )
+        logger.info(f'Первая проверка окончена спустя {time() - start} секунд')
 
+        try:
+            WebDriverWait(self.driver, 10).until(
+                lambda d: d.execute_script("return (typeof jQuery === 'undefined') || jQuery.active === 0")
+            )
+        except:
+            logger.info(f'Вторая проверка сломана спустя {time() - start} секунд')
+        logger.info(f'Вторая проверка окончена спустя {time() - start} секунд')
+
+        self._wait_till_dom_stable()
+        logger.info(f'Третья проверка окончена спустя {time() - start} секунд')
+
+    @log_calling
+    def _wait_till_dom_stable(self, check_interval=0.1):
+        start_time = time()
+        last_count = 0
+        stable_count = 0
+
+        while time() - start_time < float(2):
+            current_count = self.driver.execute_script("return document.getElementsByTagName('*').length")
+            logger.info(f'{current_count=}')
+            if current_count == last_count:
+                stable_count += 1
+                if stable_count >= 3:
+                    return
+            else:
+                stable_count = 0
+                last_count = current_count
+
+            sleep(check_interval)
+
+    @log_calling
     def _scroll_to_bottom_with_wait(self):
         previous_height = self.driver.execute_script("return document.body.scrollHeight")
         self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
@@ -111,5 +152,4 @@ class ChromeParser(Parser):
             result_set = bs.get_text(strip=True, separator="\n").split(sep="\n")
             parse_result.append(result_set)
 
-        self._log_parse_result(parse_result)
         return parse_result
