@@ -13,6 +13,7 @@ class Questioner:
     def question_user(self) -> UserAnswers:
         clear_screen()
 
+        logger.debug('Запуск опросника')
         self._ask_user(app_mode=questionary.select("Режим работы приложения", [mode for mode in AppMode], instruction=' '))
 
         if self.user_answers.app_mode == AppMode.FROM_URL:
@@ -25,6 +26,7 @@ class Questioner:
             self._ask_user(start_element_number=questionary.text("Введи номер начального элемента:", validate=bool))
             self._ask_user(delay=questionary.text("Введи задержку между действиями:", validate=bool))
 
+        logger.debug('Конец опросника')
         self._log_answers()
         return self.user_answers
 
