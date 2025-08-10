@@ -5,7 +5,7 @@ from uuid import UUID
 
 import pandas as pd
 
-from common.constants import FILES_DIR, RESULT_FILENAME, RESULT_FILENAME_DATETIME_PATTERN, MSK_TIMEZONE
+from common.constants import FILES_DIR, RESULT_FILENAME, MSK_TIMEZONE, DATETIME_PATTERN
 from common.utils import get_now_utc_str, get_now
 from logger.logger import logger, control_log_file
 from parsers.chrome_parser import ChromeParser
@@ -36,28 +36,22 @@ def main() -> None:
 
     parse_result = sorted(parse_result, key=lambda x: len(x))
     result_df: pd.DataFrame = pd.DataFrame(data=parse_result)
-    filename = FILES_DIR + RESULT_FILENAME.format(get_now(MSK_TIMEZONE).strftime(RESULT_FILENAME_DATETIME_PATTERN))
+    filename = FILES_DIR + RESULT_FILENAME.format(get_now(MSK_TIMEZONE).strftime(DATETIME_PATTERN))
     result_df.to_excel(filename)
     logger.info(f'Выгрузка файла \'{filename}\'')
 
 
-@contextmanager
-def session(session_id: UUID) -> None:
-    logger.info(f'\n\n\n----------------------- Старт сессии {session_id} в {get_now_utc_str()} -----------------------')
-    yield
-    logger.info(f'----------------------- Конец сессии {session_id} в {get_now_utc_str()} -----------------------')
-
-
 if __name__ == "__main__":
     session_id = uuid.uuid4()
+    logger.info(f'Старт сессии {session_id}')
 
-    with session(session_id=session_id):
-        try:
-            main()
-        except Exception as e:
-            logger.error(
-                f"В работе приложения возникла ошибка {e.__class__.__name__}\n"
-                f'Traceback: {traceback.format_exc()}'
-            )
+    try:
+        main()
+    except Exception as e:
+        logger.error(
+            f"В работе приложения возникла ошибка {e.__class__.__name__}\n"
+            f'Traceback: {traceback.format_exc()}'
+        )
 
+    logger.info(f'Конец сессии {session_id}\n\n\n')
     control_log_file()
